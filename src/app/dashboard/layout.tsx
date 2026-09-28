@@ -8,7 +8,11 @@ import { CommandPalette } from "@/components/nexus/command-palette"
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const ctx = await requireContext()
   const spaces = await listSpaces(ctx.tenant.id)
-  const items = [{ href: "/dashboard", label: "Home" }, ...spaces.map((sp) => ({ href: `/dashboard/s/${sp.id}`, label: `${sp.icon}  ${sp.name}` }))]
+  const items = [
+    { href: "/dashboard", label: "Home" },
+    ...spaces.map((sp) => ({ href: `/dashboard/s/${sp.id}`, label: `${sp.icon}  ${sp.name}` })),
+    { href: "/dashboard/developer", label: "Developer" },
+  ]
 
   return (
     <div className="lg:flex">

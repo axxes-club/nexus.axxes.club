@@ -643,8 +643,12 @@ export const apiTokens = pgTable("api_tokens", {
 
   // Token info
   name: text("name").notNull(),
-  key: text("key").notNull().unique(), // The actual API key (hashed)
-  prefix: text("prefix"), // First 8 chars for identification
+  // The original scaffold made this NOT NULL, which forces the secret to be
+  // stored. Nothing read it, so it is nullable now and `hash` below is what
+  // we actually look up: a database leak hands over no working credential.
+  key: text("key").unique(),
+  hash: text("hash"), // sha256 of the secret
+  prefix: text("prefix"), // Non-secret part, so a token is recognisable in a list
 
   // Permissions
   scopes: jsonb("scopes").$type<string[]>().default([]), // e.g., ["read:parts", "write:orders"]
@@ -654,7 +658,11 @@ export const apiTokens = pgTable("api_tokens", {
 
   // Usage tracking
   lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  lastUsedIp: text("last_used_ip"),
+  useCount: integer("use_count").notNull().default(0),
   expiresAt: timestamp("expires_at", { withTimezone: true }),
+  // Revoked rather than deleted, so the use history survives.
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
 
   // Audit
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -664,6 +672,7 @@ export const apiTokens = pgTable("api_tokens", {
   index("api_tokens_user_idx").on(table.userId),
   index("api_tokens_key_idx").on(table.key),
   index("api_tokens_active_idx").on(table.isActive),
+  index("api_tokens_hash_idx").on(table.hash),
 ])
 
 // ============= LABEL TEMPLATES =============
