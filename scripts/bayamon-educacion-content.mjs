@@ -65,7 +65,13 @@ El departamento se administra a través de tres programas —[[Programa Direcci�
 - [[Programa Head Start]]
 - [[Programa Puedes]]
 
-Todos los teléfonos y direcciones están reunidos en [[Directorio de Contactos]].${from("/educacion-municipal/")}`,
+Todos los teléfonos y direcciones están reunidos en [[Directorio de Contactos]].
+
+## Operación diaria
+
+- [[Inventario de materiales]] — el catálogo del almacén en Krates, las categorías y el número de parte.
+- [[Fotos de los artículos]] — cómo se toma una foto útil y qué artículos todavía no tienen una.
+- [[Cuentas de acceso del personal]] — cómo se nombra una cuenta y qué falta resolver.${from("/educacion-municipal/")}`,
   },
   {
     key: "programas",
@@ -541,6 +547,169 @@ Bayamón, Puerto Rico
 - [[Biblioteca Municipal Dra. Pilar Barbosa]]: lunes a viernes 7:00 a.m. – 8:00 p.m.; sábado 8:00 a.m. – 5:00 p.m.
 - [[Taller de Arte]] (oficina): lunes a viernes 8:00 am – 6:00 pm
 ${from("/")}`,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Operations. Everything below was learned by reconciling the department's own
+  // files against the live catalogue, so the figures and the gaps are real counts
+  // rather than estimates. No credential ever belongs in this space.
+  // ---------------------------------------------------------------------------
+
+  {
+    key: "inventario",
+    title: "Inventario de materiales",
+    icon: "📦",
+    content: `El Departamento lleva su inventario de materiales en **Krates**, en <https://kr8s.axxes.club>. Es donde vive la lista de artículos del almacén: lo que hay, cuánto hay y qué se entregó.
+
+## Categorías
+
+El catálogo está agrupado en seis categorías:
+
+| Categoría en Krates | Qué cubre |
+| --- | --- |
+| Cleaning Supplies | Limpieza: mopas, desinfectantes, bolsas, papel |
+| Garden Supplies | Jardinería: trimming, bombas, cadenas, aceites |
+| Office Supplies | Material de oficina |
+| Electrical Supplies | Material eléctrico |
+| Computer Electronics | Equipos de computación |
+| Awards | Medallas, cintas y trofeos |
+
+## El número de parte
+
+Cada artículo tiene un **número de parte** propio del departamento. Es el código con el que se pide, se recibe y se cuenta; no es un código de fábrica y no se debe cambiar.
+
+El número empieza con el prefijo de la categoría, heredado del sistema anterior:
+
+- \`07-xxxxx\` — limpieza
+- \`09-xxxxx\` — jardinería
+
+Un artículo con \`09-00524\` es *Sierra K12 14"*, y eso es lo que dice también el archivo de jardinería. **El número de parte manda sobre el nombre**: los nombres cambian, los números no.
+
+## Del sistema anterior a Krates
+
+Hasta 2025 el inventario se llevaba en *App Inv2*, en <https://hub.bayamonpr.gov/app_inv2/inventario.asp>. Krates lo sustituyó, pero los números de parte se trajeron tal cual para que nada dejara de cuadrar.
+
+Los listados impresos del sistema viejo siguen siendo la fuente de muchos datos — ver [[Fuentes de datos del inventario]].
+
+## Fotos y cuentas
+
+Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los artículos]]. El acceso de cada persona se gestiona aparte, en [[Cuentas de acceso del personal]].`,
+  },
+  {
+    key: "inventario-fuentes",
+    title: "Fuentes de datos del inventario",
+    icon: "📄",
+    content: `Estos son los archivos de los que sale la información del inventario. Cuando un archivo y Krates no coincidan, **el archivo del departamento es la fuente** y Krates se corrige.
+
+## material de jardineria.xlsx
+
+- **Alimenta:** Garden Supplies
+- **Columnas:** Part Number · Foto · Descripcion · UPC
+- Trae **una foto incrustada por fila**: cada artículo viene con su imagen. Es la mejor fuente de fotos que tiene el departamento.
+
+## INVENTARIO-limpieza.pdf
+
+- **Alimenta:** Cleaning Supplies
+- Es una impresión de *App Inv2* del 18 de septiembre de 2026.
+- Cada fila trae número de parte, foto, descripción, categoría, costo, unidad y cantidad.
+- Tiene **119 artículos con foto**, muchos de los cuales todavía no están en Krates.
+
+## distribucion de cintas y trofeos 3.xlsx
+
+- **Alimenta:** Awards
+- Es un **registro de distribución**, no un catálogo: lleva escuela, orden de compra, cantidades entregadas y saldo.
+- **No tiene fotos.** Para fotografiar medallas, cintas y trofeos hay que hacerlo en el almacén.
+
+## Qué falta
+
+No hay ninguna fuente para Material de oficina ni para Equipos de computación. Si se necesitan fotos de esas categorías, hay que tomarlas en el almacén.
+
+## Regla práctica
+
+> Antes de buscar en internet, abra el archivo del departamento: ya tiene la foto, el número de parte y la descripción del artículo.`,
+  },
+  {
+    key: "inventario-fotos",
+    title: "Fotos de los artículos",
+    icon: "📷",
+    content: `Una foto buena ahorra una llamada: el almacén y la transportación identifican el artículo por la imagen sin tener que buscar el número de parte.
+
+## Cómo tomar una foto útil
+
+1. **Un artículo, una foto.** No agrupe varios artículos en la misma imagen.
+2. **Fondo blanco o liso**, sin objetos alrededor.
+3. **El artículo completo y centrado**, con la etiqueta legible si se puede.
+4. **Que se entienda en miniatura.** La lista de inventario muestra la foto muy pequeña; si a ese tamaño no se reconoce, la foto no sirve.
+5. **La foto es del artículo de esa fila.** No reutilice la foto de otro artículo aunque se parezcan.
+
+## Dónde va la foto
+
+En Krates, al editar un artículo. La foto se guarda con el artículo y aparece en la lista de inventario y en la pantalla de verificación.
+
+## Estado actual
+
+A septiembre de 2026, de **130 artículos del catálogo, 109 tienen foto** y 21 no la tienen.
+
+### Material de jardinería (3)
+
+La hoja de jardinería trae un espacio en blanco, no una foto. Los tres tienen que fotografiarse en el almacén:
+
+| Número de parte | Artículo |
+| --- | --- |
+| \`09-00514\` | Tecomet-EFCO: EW 130 Easy-Work Tap & Go 5" Trimmer Head |
+| \`09-00525\` | Vari-Cut Blade 14" X 1.25 FOR K |
+| \`09-00531\` | Recogedor de grama para ser instalado en tractor |
+
+### Limpieza (3)
+
+- Bolsa de basura, 65 galones
+- Mota para escoba industrial (dos entradas iguales)
+- *Paños para limpieza, microfibra ya tiene foto.*
+
+### Premios (6)
+
+No hay ninguna foto de origen. Hay que fotografiar las medallas, las cintas de participación y el trofeo en el almacén.
+
+### Material de oficina (8) y Equipos de computación (1)
+
+No hay archivo que las provea; también hay que tomarlas en el almacén.
+
+> Cuando fotografíe un artículo, actualice esta lista para que el próximo no busque lo que ya está hecho.`,
+  },
+  {
+    key: "cuentas-de-acceso",
+    title: "Cuentas de acceso del personal",
+    icon: "🔑",
+    content: `Cada persona del Departamento entra a los sistemas de AXXES con su propia cuenta. **Las credenciales las maneja el Departamento y no se publican en este espacio.**
+
+## Cómo se llama una cuenta
+
+El patrón es \`usuario@bayamon.pr.gov\`, todo en minúsculas, donde \`usuario\` es el nombre de usuario que asigna el Departamento.
+
+Por ejemplo, si el usuario de una persona es \`aflores4\`, su cuenta es \`aflores4@bayamon.pr.gov\`.
+
+## Qué se hizo el 29 de septiembre de 2026
+
+Se dieron de alta las cuentas del personal del Departamento de Educación, siguiendo la lista de usuarios y contraseñas que el propio Departamento entregó:
+
+- **26 cuentas** creadas en el espacio de Educación Municipal.
+- **24** con acceso para entrar al sistema.
+- **2** quedan como personas registradas pero **todavía sin acceso**, porque en la lista no venían con usuario ni contraseña.
+- Todas están en el departamento **Educación**, con permisos de usuario general.
+
+Las contraseñas se guardaron cifradas. Nadie —ni el Departamento ni AXXES— puede leerlas después; si alguien la pierde, se genera una nueva.
+
+## Pendientes que decide el Departamento
+
+Estas tres cosas vinieron de la lista y hay que resolverlas con la oficina:
+
+1. **Cinco personas comparten la misma contraseña.** Cualquiera que la conozca puede entrar como cualquiera de las cinco. Conviene asignarles una contraseña individual.
+2. **Dos personas tienen el mismo usuario.** Como el usuario es único, solo se pudo crear una cuenta. La segunda persona necesita un usuario propio.
+3. **Dos personas no tenían usuario ni contraseña** en la lista. Cuando el Departamento las envíe, se les activa el acceso.
+
+## Pedir una cuenta nueva
+
+Las cuentas las da AXXES. Para solicitarla hay que tener a mano: nombre completo, usuario elegido por el Departamento, contraseña inicial y el espacio de trabajo (por ejemplo, Educación Municipal).`,
   },
 ]
 
