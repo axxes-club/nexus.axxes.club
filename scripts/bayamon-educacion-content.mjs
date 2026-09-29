@@ -596,7 +596,46 @@ Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los ar
 
 ## Trabajo pendiente
 
-Lo que falta por decidir o por hacer en el almacén —nombres por confirmar, artículos por contar y fotos por tomar— está en [[Pendientes del inventario]].`,
+Lo que falta por decidir o por hacer en el almacén —nombres por confirmar, artículos por contar y fotos por tomar— está en [[Pendientes del inventario]].
+
+Cuando algo de Krates no funcione, se reporta; la vía está en [[Reportar un problema]].`,
+  },
+  {
+    key: "reportar-un-problema",
+    title: "Reportar un problema",
+    icon: "🛠️",
+    content: `Si algo de Krates no funciona, o si un artículo está mal, **no hace falta arreglarlo a mano ni ajustarse**: se reporta y AXXES lo corrige.
+
+## Qué se puede reportar
+
+- Un artículo que no se deja editar, o cuyos cambios se borran al guardar.
+- Una foto que no se sube, o que no aparece.
+- Un conteo que el sistema no deja cambiar.
+- Un artículo que falta en el catálogo, o que está duplicado.
+- Una solicitud que no se puede abrir, aprobar ni cerrar.
+
+## Cómo se reporta
+
+**Desde Krates, con una solicitud tipo IT.** Es la vía más rápida, y es la que AXXES está mirando:
+
+1. Entrar a Krates y buscar **Solicitudes** en el menú, o el botón **+ Nueva solicitud**.
+2. Cambiar el tipo a **IT** — no "material".
+3. Escribir **qué estaba haciendo** y **qué pasó**. Si puede, poner el **número de parte** del artículo.
+4. Adjuntar una foto de la pantalla si ayuda a explicar el problema.
+
+Lo ve María y AXXES, y queda anotado con fecha.
+
+## Qué conviene poner
+
+| Sirve mucho | No hace falta |
+| --- | --- |
+| El número de parte del artículo, si lo hay | Detalles técnicos |
+| Qué se estaba haciendo y qué se esperaba | Capturas de pantalla si ya se expliqué bien |
+| Si le pasa siempre o solo a veces | Un tipo de equipo o navegador |
+
+## Para lo que no sea un problema técnico
+
+Si lo que hace falta es **corregir datos** —el nombre de un artículo, su categoría, si dos artículos son el mismo— eso no es una falla: se anota en [[Pendientes del inventario]] y el Departamento lo decide.`,
   },
   {
     key: "inventario-fuentes",
@@ -645,6 +684,14 @@ La excepción son las piezas que ya se entregaron o que tienen historial propio 
     icon: "📌",
     content: `Trabajo que quedó abierto el **29 de septiembre de 2026**, después de cargar el catálogo y de corregir las cantidades. Ninguno de estos puntos es un error de Krates: son decisiones que corresponden al Departamento.
 
+## Lo que ya se hizo ese día
+
+- **44 artículos** quedaron con el conteo del archivo de materiales, en vez de la cifra provisional con la que se habían cargado. Cada cambio quedó en el historial del artículo como un ajuste.
+- **Se fotografiaron los premios**: el trofeo, las tres medallas de cinta tricolor, las cintas de participación y la medalla del alcalde.
+- **Cuatro conteos se corrigieron a mano** después de esa conciliación: \`05-00073\` Clavos concreto 2 1/2" pasó de 120 a **10**, y \`07-00321\` Limpiador concentrado, \`07-00364\` Absorbedor de humedad y \`07-00425\` Drón 55-60 galón quedaron en **0**.
+- **Se borró \`01-00287\`** Abrazadera bronce toma domiciliaria de 2" con salida a 1". No tenía solicitudes ni movimientos, así que no se perdió nada.
+- **Krates dejó de perder los cambios.** Antes, al editar un artículo se borraba solo lo que se acababa de escribir: el nombre, la cantidad, y las fotos nuevas o tomadas desde el teléfono. Ya está corregido.
+
 ## 1. Confirmar dos conteos
 
 Al corregir las cantidades se aplicó el conteo del archivo sobre dos artículos que **ya habían tenido una entrega registrada a mano ese mismo día**, en la solicitud REQ-0029:
@@ -678,15 +725,17 @@ Tres baterías están en **Electrical Supplies** en Krates y en **Office Supplie
 - \`06-00030\` — Batería alcalina AA pqte. 4u
 - \`06-00031\` — Batería C
 
-## 4. Fotografiar 18 artículos
+## 4. Fotografiar 16 artículos
 
 Ninguno de los archivos del Departamento trae su foto, así que hay que hacerlas en el almacén. El procedimiento está en [[Fotos de los artículos]].
 
-**Premios (4)** — \`12-00021\` Trofeo 6 ½" Star, base mármol blanco · Medalla insert 2" oro, cinta tricolor · Medalla insert 2" plata, cinta tricolor · Medalla insert 2" bronce, cinta tricolor
+> **Actualizado el 29 de septiembre:** ya se fotografiaron los premios —el trofeo, las tres medallas de cinta tricolor, las cintas de participación y la medalla del alcalde— y quedan las 16 de esta lista. Se quitó por error la foto de la **medalla con cinta dorada ERD**, que sí la tenía: hay que volver a tomarla.
+
+**Premios (1)** — Medalla con cinta dorada ERD (se le quitó la foto por error)
 
 **Material de jardinería (3)** — \`09-00514\` Tecomet-EFCO: EW 130 Easy-Work Tap & Go 5" Trimmer Head · \`09-00525\` Vari-Cut Blade 14" X 1.25 FOR K · \`09-00531\` Recogedor de grama para ser instalado en tractor
 
-**Oficina (6)** — \`06-00565\` Carpeta hold sheets · \`12-00020\` Mochilas escolares (back pack 600D) · \`29-00005\` Cartuchera con lápices, goma, regla y sacapuntas · Micas · Libretas grandes para notas · Libreta para recibo de correspondencias
+**Oficina (8)** — \`06-00565\` Carpeta hold sheets · \`12-00020\` Mochilas escolares (back pack 600D) · \`29-00005\` Cartuchera con lápices, goma, regla y sacapuntas · Micas · Libretas grandes para notas (×2) · Libreta para recibo de correspondencias (×2)
 
 **Limpieza (3)** — Mota para escoba industrial · Bolsa de basura, 65 galones · Bulto profesional (laptop)
 
@@ -733,20 +782,15 @@ En Krates, al editar un artículo. La foto se guarda con el artículo y aparece 
 
 ## Estado actual
 
-A septiembre de 2026, de **1,189 artículos del catálogo, 1,171 tienen foto** y **18 no la tienen**. El catálogo se armó con el archivo de materiales (1,103 productos con foto), el de jardinería y el listado de limpieza impreso.
+A septiembre de 2026, de **1,188 artículos del catálogo, 1,172 tienen foto** y **16 no la tienen**. El catálogo se armó con el archivo de materiales (1,103 productos con foto), el de jardinería y el listado de limpieza impreso.
 
-Las 18 que faltan son las que ningún archivo del departamento trae imagen. Todas hay que fotografiarlas en el almacén.
+Las 16 que faltan son las que ningún archivo del departamento trae imagen. Todas hay que fotografiarlas en el almacén.
 
-### Premios (4)
+> **Actualizado el 29 de septiembre:** ya se fotografiaron el trofeo, las tres medallas de cinta tricolor, las cintas de participación y la medalla del alcalde. Se quitó por error la foto de la medalla con cinta dorada ERD, que hay que volver a tomar.
 
-Ni el archivo de cintas y trofeos ni el de materiales traen fotos. Hay que fotografiar las medallas y el trofeo:
+### Premios (1)
 
-- Medalla insert 2" bronce, cinta tricolor
-- Medalla insert 2" oro, cinta tricolor
-- Medalla insert 2" plata, cinta tricolor
-- Trofeo 6 ½" Star, base mármol blanco
-
-Las cintas de participación y la medalla con cinta dorada ERD ya tienen foto.
+- Medalla con cinta dorada ERD — se le quitó la foto por error, hay que volver a tomarla
 
 ### Material de jardinería (3)
 
@@ -758,9 +802,9 @@ La hoja de jardinería trae un espacio en blanco, no una foto. Los tres tienen q
 | \`09-00525\` | Vari-Cut Blade 14" X 1.25 FOR K |
 | \`09-00531\` | Recogedor de grama para ser instalado en tractor |
 
-### Material de oficina (6)
+### Material de oficina (8)
 
-Carpeta hold sheets · Cartuchera con lápices, goma, regla y saca puntas impresas · Libreta para recibo de correspondencias (×2) · Libretas grandes para notas (×2) · Micas · Mochilas escolares (back pack 600D)
+Carpeta hold sheets (\`06-00565\`) · Mochilas escolares (back pack 600D) (\`12-00020\`) · Cartuchera con lápices, goma, regla y saca puntas (\`29-00005\`) · Micas · Libretas grandes para notas (×2) · Libreta para recibo de correspondencias (×2)
 
 ### Limpieza (3) y Equipos de computación (1)
 
@@ -803,7 +847,11 @@ Estas tres cosas vinieron de la lista y hay que resolverlas con la oficina:
 
 ## Pedir una cuenta nueva
 
-Las cuentas las da AXXES. Para solicitarla hay que tener a mano: nombre completo, usuario elegido por el Departamento, contraseña inicial y el espacio de trabajo (por ejemplo, Educación Municipal).`,
+Las cuentas las da AXXES. Para solicitarla hay que tener a mano: nombre completo, usuario elegido por el Departamento, contraseña inicial y el espacio de trabajo (por ejemplo, Educación Municipal).
+
+## Cuando algo no funciona
+
+Un problema con Krates —un artículo que no se deja editar, una foto que no sube, un conteo que no cambia— se reporta, no se resuelve a mano ni se trabaja alrededor. La vía está en [[Reportar un problema]].`,
   },
 ]
 
