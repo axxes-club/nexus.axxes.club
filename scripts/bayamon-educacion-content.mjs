@@ -563,25 +563,24 @@ ${from("/")}`,
 
 ## Categorías
 
-El catálogo está agrupado en seis categorías:
+El catálogo está agrupado en ocho categorías:
 
-| Categoría en Krates | Qué cubre |
-| --- | --- |
-| Cleaning Supplies | Limpieza: mopas, desinfectantes, bolsas, papel |
-| Garden Supplies | Jardinería: trimming, bombas, cadenas, aceites |
-| Office Supplies | Material de oficina |
-| Electrical Supplies | Material eléctrico |
-| Computer Electronics | Equipos de computación |
-| Awards | Medallas, cintas y trofeos |
+| Categoría en Krates | Qué cubre | Prefijo |
+| --- | --- | --- |
+| Plumbing Supplies | Plomería | \`01-\` |
+| Construction Supplies | Construcción | \`05-\` |
+| Electrical Supplies | Material eléctrico | \`19-\` |
+| Office Supplies | Material de oficina | \`06-\` |
+| Cleaning Supplies | Limpieza: mopas, desinfectantes, bolsas, papel | \`07-\` |
+| Garden Supplies | Jardinería: trimming, bombas, cadenas, aceites | \`09-\` |
+| Computer Electronics | Equipos de computación | — |
+| Awards | Medallas, cintas y trofeos | \`12-\` |
 
 ## El número de parte
 
 Cada artículo tiene un **número de parte** propio del departamento. Es el código con el que se pide, se recibe y se cuenta; no es un código de fábrica y no se debe cambiar.
 
-El número empieza con el prefijo de la categoría, heredado del sistema anterior:
-
-- \`07-xxxxx\` — limpieza
-- \`09-xxxxx\` — jardinería
+El número empieza con el prefijo de la categoría, heredado del sistema anterior: \`01-\` plomería, \`05-\` construcción, \`06-\` oficina, \`07-\` limpieza, \`09-\` jardinería, \`19-\` electricidad.
 
 Un artículo con \`09-00524\` es *Sierra K12 14"*, y eso es lo que dice también el archivo de jardinería. **El número de parte manda sobre el nombre**: los nombres cambian, los números no.
 
@@ -601,18 +600,24 @@ Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los ar
     icon: "📄",
     content: `Estos son los archivos de los que sale la información del inventario. Cuando un archivo y Krates no coincidan, **el archivo del departamento es la fuente** y Krates se corrige.
 
+## MATERIALES Y DIBUJO DE INVENTARIO.xlsx
+
+- **Alimenta:** Plomería, Construcción, Electricidad, Oficina y Limpieza
+- Es el archivo más grande del departamento: **1,103 productos con foto**, uno por fila, en cinco pestañas (PLOMERIA, CONSTRUCCION, ELECTRICIDAD, OFICINA, lIMPIEZA).
+- Columnas: Part Number · Foto · Descripcion · UPC · Categoria · Costo · Unidad · Cantidad · Minima · Maxima.
+- Su pestaña PREMIACIONES no se usó: trae los nombres sueltos, sin número de parte ni foto, y son las mismas medallas y cintas que ya están en el catálogo.
+
 ## material de jardineria.xlsx
 
 - **Alimenta:** Garden Supplies
 - **Columnas:** Part Number · Foto · Descripcion · UPC
-- Trae **una foto incrustada por fila**: cada artículo viene con su imagen. Es la mejor fuente de fotos que tiene el departamento.
+- Trae **una foto incrustada por fila**: cada artículo viene con su imagen.
 
 ## INVENTARIO-limpieza.pdf
 
 - **Alimenta:** Cleaning Supplies
 - Es una impresión de *App Inv2* del 18 de septiembre de 2026.
 - Cada fila trae número de parte, foto, descripción, categoría, costo, unidad y cantidad.
-- Tiene **119 artículos con foto**, muchos de los cuales todavía no están en Krates.
 
 ## distribucion de cintas y trofeos 3.xlsx
 
@@ -620,9 +625,9 @@ Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los ar
 - Es un **registro de distribución**, no un catálogo: lleva escuela, orden de compra, cantidades entregadas y saldo.
 - **No tiene fotos.** Para fotografiar medallas, cintas y trofeos hay que hacerlo en el almacén.
 
-## Qué falta
+## Ojo con las cantidades
 
-No hay ninguna fuente para Material de oficina ni para Equipos de computación. Si se necesitan fotos de esas categorías, hay que tomarlas en el almacén.
+Las cantidades de estos archivos son de una fecha anterior a las del almacén. El listado de limpieza impreso el 18 de septiembre dice 27 unidades de \`07-00001\` y 6 de \`07-00003\`; el archivo de materiales dice 25 y 4. **Las cantidades del archivo sirven para dar de alta un artículo, no para fijar el inventario**; lo que vale es el conteo del almacén.
 
 ## Regla práctica
 
@@ -648,7 +653,20 @@ En Krates, al editar un artículo. La foto se guarda con el artículo y aparece 
 
 ## Estado actual
 
-A septiembre de 2026, de **130 artículos del catálogo, 109 tienen foto** y 21 no la tienen.
+A septiembre de 2026, de **1,189 artículos del catálogo, 1,168 tienen foto** y 21 no la tienen. El catálogo se armó con el archivo de materiales (1,103 productos con foto), el de jardinería y el listado de limpieza impreso.
+
+Las 21 que faltan son las que ningún archivo del departamento trae imagen. Todas hay que fotografiarlas en el almacén.
+
+### Premios (6)
+
+Ni el archivo de cintas y trofeos ni el de materiales traen fotos. Hay que fotografiar las medallas, las cintas de participación y el trofeo.
+
+- Cintas de participación
+- Medalla con cinta dorada ERD
+- Medalla insert 2" bronce, cinta tricolor
+- Medalla insert 2" oro, cinta tricolor
+- Medalla insert 2" plata, cinta tricolor
+- Trofeo 6 ½" Star, base mármol blanco
 
 ### Material de jardinería (3)
 
@@ -660,19 +678,13 @@ La hoja de jardinería trae un espacio en blanco, no una foto. Los tres tienen q
 | \`09-00525\` | Vari-Cut Blade 14" X 1.25 FOR K |
 | \`09-00531\` | Recogedor de grama para ser instalado en tractor |
 
-### Limpieza (3)
+### Material de oficina (8)
 
-- Bolsa de basura, 65 galones
-- Mota para escoba industrial (dos entradas iguales)
-- *Paños para limpieza, microfibra ya tiene foto.*
+Carpeta hold sheets · Cartuchera con lápices, goma, regla y saca puntas impresas · Libreta para recibo de correspondencias (×2) · Libretas grandes para notas (×2) · Micas · Mochilas escolares (back pack 600D)
 
-### Premios (6)
+### Limpieza (3) y Equipos de computación (1)
 
-No hay ninguna foto de origen. Hay que fotografiar las medallas, las cintas de participación y el trofeo en el almacén.
-
-### Material de oficina (8) y Equipos de computación (1)
-
-No hay archivo que las provea; también hay que tomarlas en el almacén.
+Bolsa de basura, 65 galones · Mota para escoba industrial (×2) · Bulto profesional (laptop)
 
 > Cuando fotografíe un artículo, actualice esta lista para que el próximo no busque lo que ya está hecho.`,
   },
