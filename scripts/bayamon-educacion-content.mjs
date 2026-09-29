@@ -684,9 +684,9 @@ No hay archivo que las provea; también hay que tomarlas en el almacén.
 
 ## Cómo se llama una cuenta
 
-El patrón es \`usuario@bayamon.pr.gov\`, todo en minúsculas, donde \`usuario\` es el nombre de usuario que asigna el Departamento.
+El patrón es \`usuario@bayamonpr.gov\`, todo en minúsculas, donde \`usuario\` es el nombre de usuario que asigna el Departamento. El dominio no lleva punto: \`bayamonpr.gov\`, no \`bayamon.pr.gov\`.
 
-Por ejemplo, si el usuario de una persona es \`aflores4\`, su cuenta es \`aflores4@bayamon.pr.gov\`.
+Por ejemplo, si el usuario de una persona es \`aflores4\`, su cuenta es \`aflores4@bayamonpr.gov\`.
 
 ## Qué se hizo el 29 de septiembre de 2026
 
