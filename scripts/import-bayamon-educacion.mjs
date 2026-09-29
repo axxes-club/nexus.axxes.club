@@ -35,6 +35,7 @@ const PARENT = {
   "head-start-centros": "head-start",
   "inventario-fuentes": "inventario",
   "inventario-fotos": "inventario",
+  "inventario-pendientes": "inventario",
 }
 
 const depth = (key) => (PARENT[key] ? 1 + depth(PARENT[key]) : 0)

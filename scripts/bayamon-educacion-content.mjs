@@ -592,7 +592,11 @@ Los listados impresos del sistema viejo siguen siendo la fuente de muchos datos 
 
 ## Fotos y cuentas
 
-Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los artículos]]. El acceso de cada persona se gestiona aparte, en [[Cuentas de acceso del personal]].`,
+Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los artículos]]. El acceso de cada persona se gestiona aparte, en [[Cuentas de acceso del personal]].
+
+## Trabajo pendiente
+
+Lo que falta por decidir o por hacer en el almacén —nombres por confirmar, artículos por contar y fotos por tomar— está en [[Pendientes del inventario]].`,
   },
   {
     key: "inventario-fuentes",
@@ -627,11 +631,87 @@ Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los ar
 
 ## Ojo con las cantidades
 
-Las cantidades de estos archivos son de una fecha anterior a las del almacén. El listado de limpieza impreso el 18 de septiembre dice 27 unidades de \`07-00001\` y 6 de \`07-00003\`; el archivo de materiales dice 25 y 4. **Las cantidades del archivo sirven para dar de alta un artículo, no para fijar el inventario**; lo que vale es el conteo del almacén.
+**El conteo del Departamento manda sobre Krates.** Cuando el archivo y Krates no coincidan, el archivo se corrige en Krates: así se hizo el 29 de septiembre de 2026, cuando 44 artículos que seguían con una cifra provisional quedaron con el conteo del archivo de materiales. Ese cambio quedó registrado en el historial de cada artículo, como un ajuste.
+
+La excepción son las piezas que ya se entregaron o que tienen historial propio —trofeos, medallas y cintas—: esos llevan su propio registro de entradas, compras y entregas desde 2025, y un archivo que no los menciona no dice nada sobre ellos.
 
 ## Regla práctica
 
 > Antes de buscar en internet, abra el archivo del departamento: ya tiene la foto, el número de parte y la descripción del artículo.`,
+  },
+  {
+    key: "inventario-pendientes",
+    title: "Pendientes del inventario",
+    icon: "📌",
+    content: `Trabajo que quedó abierto el **29 de septiembre de 2026**, después de cargar el catálogo y de corregir las cantidades. Ninguno de estos puntos es un error de Krates: son decisiones que corresponden al Departamento.
+
+## 1. Confirmar dos conteos
+
+Al corregir las cantidades se aplicó el conteo del archivo sobre dos artículos que **ya habían tenido una entrega registrada a mano ese mismo día**, en la solicitud REQ-0029:
+
+| Número de parte | Artículo | Conteo aplicado |
+| --- | --- | --- |
+| \`06-00008\` | Banda de goma #117 | 104 |
+| \`06-00035\` | Binder t/carta, abierto al lado | 112 |
+
+La entrega quedó en el historial y el conteo se aplicó encima, no en lugar de ella. Falta confirmar que el conteo del archivo es **posterior** a esa entrega; si fue anterior, hay que volver a ajustar. Lo decide quien estuvo en el almacén.
+
+## 2. Revisar los nombres de 29 artículos
+
+En 29 de los artículos del archivo de materiales el nombre **no coincide con el que está en Krates**, y no es solo de mayúsculas o de tildes: el archivo suele traer más detalle.
+
+| En Krates | En el archivo |
+| --- | --- |
+| Escoba regular | ESCOBA REGULAR CON PALO |
+| Clorox, galón | CLOROX |
+| Papel sanitario | PAPEL SANITARIO IGUAL O SIMILAR A T-TORK (12 0215 02) |
+| Post-it notes en colores T/ 2" x 3" | POST-IT NOTES EN COLORES T/ 2" X 3" PADS 100 HOJAS |
+| Paños para limpieza, microfibra | — (trae otro texto) |
+
+No se cambiaron solos. El nombre del archivo es más preciso, pero viene en mayúsculas y sin tildes, y a veces **acorta** lo que Krates ya tenía bien puesto. La decisión es qué texto manda; conviene decidirla una vez y aplicarla a los 29, no uno por uno.
+
+## 3. Revisar la categoría de 3 artículos
+
+Tres baterías están en **Electrical Supplies** en Krates y en **Office Supplies** en el archivo:
+
+- \`06-00029\` — Batería alcalina AAA pqte. 4U
+- \`06-00030\` — Batería alcalina AA pqte. 4u
+- \`06-00031\` — Batería C
+
+## 4. Fotografiar 18 artículos
+
+Ninguno de los archivos del Departamento trae su foto, así que hay que hacerlas en el almacén. El procedimiento está en [[Fotos de los artículos]].
+
+**Premios (4)** — \`12-00021\` Trofeo 6 ½" Star, base mármol blanco · Medalla insert 2" oro, cinta tricolor · Medalla insert 2" plata, cinta tricolor · Medalla insert 2" bronce, cinta tricolor
+
+**Material de jardinería (3)** — \`09-00514\` Tecomet-EFCO: EW 130 Easy-Work Tap & Go 5" Trimmer Head · \`09-00525\` Vari-Cut Blade 14" X 1.25 FOR K · \`09-00531\` Recogedor de grama para ser instalado en tractor
+
+**Oficina (6)** — \`06-00565\` Carpeta hold sheets · \`12-00020\` Mochilas escolares (back pack 600D) · \`29-00005\` Cartuchera con lápices, goma, regla y sacapuntas · Micas · Libretas grandes para notas · Libreta para recibo de correspondencias
+
+**Limpieza (3)** — Mota para escoba industrial · Bolsa de basura, 65 galones · Bulto profesional (laptop)
+
+## 5. 48 artículos quedaron con 100 unidades de relleno
+
+Al cargar el catálogo, los artículos que ningún archivo del Departamento trae con número de partida se dejaron con **100 unidades** como valor provisional, para que se vieran en la lista. **Ese 100 no es un conteo.** Son 48 artículos, casi todos de limpieza y oficina, y hay que contarlos en el almacén y poner la cifra real.
+
+Los que sí tienen número de parte y aparecen en el archivo de materiales ya quedaron corregidos con el conteo del Departamento.
+
+Quedan dos grupos pendientes:
+
+- **24 con número de parte que no están en el archivo de materiales** — sobre todo limpieza y oficina: \`06-00026\`, \`06-00254\`, \`06-00287\`, \`06-00297\`, \`06-00298\`, \`06-00400\`, \`06-00543\`, \`06-00545\`, \`06-00550\`, \`06-00551\`, \`06-00557\`, \`06-00565\`, \`06-00572\`, \`07-00079\`, \`07-00086\`, \`07-00100\`, \`07-00128\`, \`07-00177\`, \`07-00185\`, \`07-00218\`, \`07-00235\`, \`07-00288\`, \`12-00019\`, \`29-00005\`. El listado de limpieza impreso trae los de limpieza, así que de ésos se puede copiar el conteo del PDF en vez de volver a contar.
+- **19 sin número de parte**, que hay que identificar en el almacén.
+
+## 6. Cinco nombres repetidos sin número de parte
+
+Cinco artículos aparecen **dos veces** en el catálogo, sin código, porque llegaron sin número de parte y no había forma de distinguirlos:
+
+- Libretas grandes para notas
+- Manguera de 100ft
+- Libreta para recibo de correspondencias
+- Batería D
+- Mota para escoba industrial
+
+Hay que decidir si son el mismo artículo repetido por error —en cuyo caso se borra uno— o si son piezas distintas. Para distinguirlos hace falta un número de parte o una foto.`,
   },
   {
     key: "inventario-fotos",
@@ -653,20 +733,20 @@ En Krates, al editar un artículo. La foto se guarda con el artículo y aparece 
 
 ## Estado actual
 
-A septiembre de 2026, de **1,189 artículos del catálogo, 1,168 tienen foto** y 21 no la tienen. El catálogo se armó con el archivo de materiales (1,103 productos con foto), el de jardinería y el listado de limpieza impreso.
+A septiembre de 2026, de **1,189 artículos del catálogo, 1,171 tienen foto** y **18 no la tienen**. El catálogo se armó con el archivo de materiales (1,103 productos con foto), el de jardinería y el listado de limpieza impreso.
 
-Las 21 que faltan son las que ningún archivo del departamento trae imagen. Todas hay que fotografiarlas en el almacén.
+Las 18 que faltan son las que ningún archivo del departamento trae imagen. Todas hay que fotografiarlas en el almacén.
 
-### Premios (6)
+### Premios (4)
 
-Ni el archivo de cintas y trofeos ni el de materiales traen fotos. Hay que fotografiar las medallas, las cintas de participación y el trofeo.
+Ni el archivo de cintas y trofeos ni el de materiales traen fotos. Hay que fotografiar las medallas y el trofeo:
 
-- Cintas de participación
-- Medalla con cinta dorada ERD
 - Medalla insert 2" bronce, cinta tricolor
 - Medalla insert 2" oro, cinta tricolor
 - Medalla insert 2" plata, cinta tricolor
 - Trofeo 6 ½" Star, base mármol blanco
+
+Las cintas de participación y la medalla con cinta dorada ERD ya tienen foto.
 
 ### Material de jardinería (3)
 
@@ -678,13 +758,15 @@ La hoja de jardinería trae un espacio en blanco, no una foto. Los tres tienen q
 | \`09-00525\` | Vari-Cut Blade 14" X 1.25 FOR K |
 | \`09-00531\` | Recogedor de grama para ser instalado en tractor |
 
-### Material de oficina (8)
+### Material de oficina (6)
 
 Carpeta hold sheets · Cartuchera con lápices, goma, regla y saca puntas impresas · Libreta para recibo de correspondencias (×2) · Libretas grandes para notas (×2) · Micas · Mochilas escolares (back pack 600D)
 
 ### Limpieza (3) y Equipos de computación (1)
 
 Bolsa de basura, 65 galones · Mota para escoba industrial (×2) · Bulto profesional (laptop)
+
+El resumen de todo lo que falta está en [[Pendientes del inventario]].
 
 > Cuando fotografíe un artículo, actualice esta lista para que el próximo no busque lo que ya está hecho.`,
   },
