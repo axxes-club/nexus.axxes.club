@@ -41,6 +41,7 @@ export default async function PageView({ params }: { params: Promise<{ spaceId: 
   const links = Object.fromEntries([...index].map(([t, p]) => [t, `/dashboard/s/${p.spaceId}/${p.id}`]))
   return (
     <Editor
+      canWrite={["owner", "admin", "manager", "member"].includes(ctx.role)}
       key={page.id}
       page={page}
       links={links}
