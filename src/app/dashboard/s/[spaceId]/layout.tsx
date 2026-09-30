@@ -1,14 +1,24 @@
 import { notFound } from "next/navigation"
 import { requireContext } from "@/lib/context"
-import { getSpace, spaceTree } from "@/lib/nexus/data"
+import { findSpaceInOtherOrg, getSpace, spaceTree } from "@/lib/nexus/data"
 import { PageTree } from "@/components/nexus/page-tree"
+import { WrongOrganization } from "@/components/nexus/wrong-organization"
 
 export default async function SpaceLayout({ children, params }: { children: React.ReactNode; params: Promise<{ spaceId: string }> }) {
   const ctx = await requireContext()
   const { spaceId } = await params
-  const space = await getSpace(ctx.tenant.id, spaceId)
-  if (!space) notFound()
-  const pages = await spaceTree(space.id)
+  // The tree is keyed by spaceId, which we already have, so it does not have to
+  // wait on the space lookup. Running them together halves the time to first byte.
+  const [space, pages] = await Promise.all([getSpace(ctx.tenant.id, spaceId), spaceTree(spaceId)])
+  if (!space) {
+    // Same reasoning as a missing page: a space in a workspace this person
+    // belongs to but is not looking at is a wrong turn, not a dead end.
+    const elsewhere = await findSpaceInOtherOrg(ctx.userId, spaceId)
+    if (elsewhere) {
+      return <WrongOrganization elsewhere={elsewhere} currentName={ctx.tenant.name} returnTo={`/dashboard/s/${spaceId}`} />
+    }
+    notFound()
+  }
   return (
     <div className="flex">
       <PageTree spaceId={space.id} spaceName={space.name} spaceIcon={space.icon} pages={pages} />

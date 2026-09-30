@@ -93,3 +93,79 @@ export async function pageVersions(pageId: string) {
     .orderBy(desc(s.nexusPageVersions.createdAt))
     .limit(50)
 }
+
+// --- finding something in another organization -----------------------------
+
+/**
+ * Which of this person's *other* organizations holds a page they just asked
+ * for?
+ *
+ * The organization is chosen per browser, not per page: a cookie picks it, and
+ * when there is no cookie the app falls back to whichever membership is marked
+ * primary. So the commonest way to be told "not found" is not that the page is
+ * missing — it is that it belongs to a workspace you are a member of but are
+ * not currently looking at. A bare 404 makes that look like the page is gone.
+ *
+ * The search is restricted to organizations the person is a live member of, so
+ * this can only ever name something they are already entitled to see. If they
+ * are not a member anywhere, it returns null and the caller shows a plain 404.
+ */
+export async function findPageInOtherOrg(userId: string, pageId: string) {
+  const [row] = await db
+    .select({
+      tenantId: s.tenants.id,
+      tenantName: s.tenants.name,
+      tenantSlug: s.tenants.slug,
+      spaceId: s.nexusSpaces.id,
+      spaceName: s.nexusSpaces.name,
+      spaceIcon: s.nexusSpaces.icon,
+      pageTitle: s.nexusPages.title,
+    })
+    .from(s.nexusPages)
+    .innerJoin(s.nexusSpaces, eq(s.nexusSpaces.id, s.nexusPages.spaceId))
+    .innerJoin(s.tenants, eq(s.tenants.id, s.nexusPages.tenantId))
+    .innerJoin(
+      s.tenantMemberships,
+      and(eq(s.tenantMemberships.tenantId, s.tenants.id), eq(s.tenantMemberships.userId, userId)),
+    )
+    .where(
+      and(
+        eq(s.nexusPages.id, pageId),
+        isNull(s.nexusPages.deletedAt),
+        isNull(s.nexusSpaces.deletedAt),
+        isNull(s.tenants.deletedAt),
+        isNull(s.tenantMemberships.deletedAt),
+      ),
+    )
+    .limit(1)
+  return row ?? null
+}
+
+/** The same question about a space rather than a page. */
+export async function findSpaceInOtherOrg(userId: string, spaceId: string) {
+  const [row] = await db
+    .select({
+      tenantId: s.tenants.id,
+      tenantName: s.tenants.name,
+      tenantSlug: s.tenants.slug,
+      spaceId: s.nexusSpaces.id,
+      spaceName: s.nexusSpaces.name,
+      spaceIcon: s.nexusSpaces.icon,
+    })
+    .from(s.nexusSpaces)
+    .innerJoin(s.tenants, eq(s.tenants.id, s.nexusSpaces.tenantId))
+    .innerJoin(
+      s.tenantMemberships,
+      and(eq(s.tenantMemberships.tenantId, s.tenants.id), eq(s.tenantMemberships.userId, userId)),
+    )
+    .where(
+      and(
+        eq(s.nexusSpaces.id, spaceId),
+        isNull(s.nexusSpaces.deletedAt),
+        isNull(s.tenants.deletedAt),
+        isNull(s.tenantMemberships.deletedAt),
+      ),
+    )
+    .limit(1)
+  return row ?? null
+}

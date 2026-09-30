@@ -1,7 +1,7 @@
 import { requireContext } from "@/lib/context"
 import { Sidebar } from "@/components/sidebar"
 import { SignOut } from "@/components/sign-out"
-import { Logo } from "@/components/logo"
+import { Logo, LogoMark } from "@/components/logo"
 import { listSpaces } from "@/lib/nexus/data"
 import { CommandPalette } from "@/components/nexus/command-palette"
 import { OrgSwitcher } from "@/components/org-switcher"
@@ -11,7 +11,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const spaces = await listSpaces(ctx.tenant.id)
   const items = [
     { href: "/dashboard", label: "Home" },
-    ...spaces.map((sp) => ({ href: `/dashboard/s/${sp.id}`, label: `${sp.icon}  ${sp.name}` })),
+    // The icon rides along so the collapsed rail can show a glyph per space
+    // instead of a truncated first letter.
+    ...spaces.map((sp) => ({ href: `/dashboard/s/${sp.id}`, label: sp.name, icon: sp.icon })),
     { href: "/dashboard/developer", label: "Developer" },
   ]
 
@@ -20,6 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <Sidebar
         items={items}
         logo={<Logo />}
+        mark={<LogoMark />}
         footer={
           <div className="space-y-3 text-xs">
             <p className="rounded-lg border border-line px-2.5 py-1.5 text-muted">Search <kbd className="float-right font-mono">⌘K</kbd></p>

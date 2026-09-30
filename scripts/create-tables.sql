@@ -45,3 +45,8 @@ create table if not exists nexus_links (
   primary key (from_page_id, to_page_id)
 );
 create index if not exists nexus_links_to_idx on nexus_links (to_page_id);
+
+-- Wiki links resolve by title, case-insensitively and tenant-wide, so the lookup
+-- filters on lower(title). Without this index every page view scans every page
+-- the tenant owns.
+create index if not exists nexus_pages_title_lower_idx on nexus_pages (lower(title));

@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm"
 import { index, integer, pgTable, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
 // Nexus's own tables (prefixed; created by scripts/create-tables.sql)
@@ -34,7 +35,12 @@ export const nexusPages = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
-  (t) => [index("nexus_pages_space_idx").on(t.spaceId, t.parentId), index("nexus_pages_tenant_idx").on(t.tenantId, t.updatedAt)]
+  (t) => [
+    index("nexus_pages_space_idx").on(t.spaceId, t.parentId),
+    index("nexus_pages_tenant_idx").on(t.tenantId, t.updatedAt),
+    // [[wiki links]] resolve by title, case-insensitively, across the tenant.
+    index("nexus_pages_title_lower_idx").on(sql`lower(${t.title})`),
+  ]
 )
 
 // Snapshots taken as a page is edited, so any version can be restored
