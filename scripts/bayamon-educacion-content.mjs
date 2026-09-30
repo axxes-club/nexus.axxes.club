@@ -65,7 +65,13 @@ El departamento se administra a través de tres programas —[[Programa Direcci�
 - [[Programa Head Start]]
 - [[Programa Puedes]]
 
-Todos los teléfonos y direcciones están reunidos en [[Directorio de Contactos]].${from("/educacion-municipal/")}`,
+Todos los teléfonos y direcciones están reunidos en [[Directorio de Contactos]].
+
+## Operación diaria
+
+- [[Inventario de materiales]] — el catálogo del almacén en Krates, las categorías y el número de parte.
+- [[Fotos de los artículos]] — cómo se toma una foto útil y qué artículos todavía no tienen una.
+- [[Cuentas de acceso del personal]] — cómo se nombra una cuenta y qué falta resolver.${from("/educacion-municipal/")}`,
   },
   {
     key: "programas",
@@ -541,6 +547,311 @@ Bayamón, Puerto Rico
 - [[Biblioteca Municipal Dra. Pilar Barbosa]]: lunes a viernes 7:00 a.m. – 8:00 p.m.; sábado 8:00 a.m. – 5:00 p.m.
 - [[Taller de Arte]] (oficina): lunes a viernes 8:00 am – 6:00 pm
 ${from("/")}`,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Operations. Everything below was learned by reconciling the department's own
+  // files against the live catalogue, so the figures and the gaps are real counts
+  // rather than estimates. No credential ever belongs in this space.
+  // ---------------------------------------------------------------------------
+
+  {
+    key: "inventario",
+    title: "Inventario de materiales",
+    icon: "📦",
+    content: `El Departamento lleva su inventario de materiales en **Krates**, en <https://kr8s.axxes.club>. Es donde vive la lista de artículos del almacén: lo que hay, cuánto hay y qué se entregó.
+
+## Categorías
+
+El catálogo está agrupado en ocho categorías:
+
+| Categoría en Krates | Qué cubre | Prefijo |
+| --- | --- | --- |
+| Plumbing Supplies | Plomería | \`01-\` |
+| Construction Supplies | Construcción | \`05-\` |
+| Electrical Supplies | Material eléctrico | \`19-\` |
+| Office Supplies | Material de oficina | \`06-\` |
+| Cleaning Supplies | Limpieza: mopas, desinfectantes, bolsas, papel | \`07-\` |
+| Garden Supplies | Jardinería: trimming, bombas, cadenas, aceites | \`09-\` |
+| Computer Electronics | Equipos de computación | — |
+| Awards | Medallas, cintas y trofeos | \`12-\` |
+
+## El número de parte
+
+Cada artículo tiene un **número de parte** propio del departamento. Es el código con el que se pide, se recibe y se cuenta; no es un código de fábrica y no se debe cambiar.
+
+El número empieza con el prefijo de la categoría, heredado del sistema anterior: \`01-\` plomería, \`05-\` construcción, \`06-\` oficina, \`07-\` limpieza, \`09-\` jardinería, \`19-\` electricidad.
+
+Un artículo con \`09-00524\` es *Sierra K12 14"*, y eso es lo que dice también el archivo de jardinería. **El número de parte manda sobre el nombre**: los nombres cambian, los números no.
+
+## Del sistema anterior a Krates
+
+Hasta 2025 el inventario se llevaba en *App Inv2*, en <https://hub.bayamonpr.gov/app_inv2/inventario.asp>. Krates lo sustituyó, pero los números de parte se trajeron tal cual para que nada dejara de cuadrar.
+
+Los listados impresos del sistema viejo siguen siendo la fuente de muchos datos — ver [[Fuentes de datos del inventario]].
+
+## Fotos y cuentas
+
+Cada artículo puede tener una foto; el procedimiento está en [[Fotos de los artículos]]. El acceso de cada persona se gestiona aparte, en [[Cuentas de acceso del personal]].
+
+## Trabajo pendiente
+
+Lo que falta por decidir o por hacer en el almacén —nombres por confirmar, artículos por contar y fotos por tomar— está en [[Pendientes del inventario]].
+
+Cuando algo de Krates no funcione, se reporta; la vía está en [[Reportar un problema]].`,
+  },
+  {
+    key: "reportar-un-problema",
+    title: "Reportar un problema",
+    icon: "🛠️",
+    content: `Si algo de Krates no funciona, o si un artículo está mal, **no hace falta arreglarlo a mano ni ajustarse**: se reporta y AXXES lo corrige.
+
+## Qué se puede reportar
+
+- Un artículo que no se deja editar, o cuyos cambios se borran al guardar.
+- Una foto que no se sube, o que no aparece.
+- Un conteo que el sistema no deja cambiar.
+- Un artículo que falta en el catálogo, o que está duplicado.
+- Una solicitud que no se puede abrir, aprobar ni cerrar.
+
+## Cómo se reporta
+
+**Desde Krates, con una solicitud tipo IT.** Es la vía más rápida, y es la que AXXES está mirando:
+
+1. Entrar a Krates y buscar **Solicitudes** en el menú, o el botón **+ Nueva solicitud**.
+2. Cambiar el tipo a **IT** — no "material".
+3. Escribir **qué estaba haciendo** y **qué pasó**. Si puede, poner el **número de parte** del artículo.
+4. Adjuntar una foto de la pantalla si ayuda a explicar el problema.
+
+Lo ve María y AXXES, y queda anotado con fecha.
+
+## Qué conviene poner
+
+| Sirve mucho | No hace falta |
+| --- | --- |
+| El número de parte del artículo, si lo hay | Detalles técnicos |
+| Qué se estaba haciendo y qué se esperaba | Capturas de pantalla si ya se expliqué bien |
+| Si le pasa siempre o solo a veces | Un tipo de equipo o navegador |
+
+## Para lo que no sea un problema técnico
+
+Si lo que hace falta es **corregir datos** —el nombre de un artículo, su categoría, si dos artículos son el mismo— eso no es una falla: se anota en [[Pendientes del inventario]] y el Departamento lo decide.`,
+  },
+  {
+    key: "inventario-fuentes",
+    title: "Fuentes de datos del inventario",
+    icon: "📄",
+    content: `Estos son los archivos de los que sale la información del inventario. Cuando un archivo y Krates no coincidan, **el archivo del departamento es la fuente** y Krates se corrige.
+
+## MATERIALES Y DIBUJO DE INVENTARIO.xlsx
+
+- **Alimenta:** Plomería, Construcción, Electricidad, Oficina y Limpieza
+- Es el archivo más grande del departamento: **1,103 productos con foto**, uno por fila, en cinco pestañas (PLOMERIA, CONSTRUCCION, ELECTRICIDAD, OFICINA, lIMPIEZA).
+- Columnas: Part Number · Foto · Descripcion · UPC · Categoria · Costo · Unidad · Cantidad · Minima · Maxima.
+- Su pestaña PREMIACIONES no se usó: trae los nombres sueltos, sin número de parte ni foto, y son las mismas medallas y cintas que ya están en el catálogo.
+
+## material de jardineria.xlsx
+
+- **Alimenta:** Garden Supplies
+- **Columnas:** Part Number · Foto · Descripcion · UPC
+- Trae **una foto incrustada por fila**: cada artículo viene con su imagen.
+
+## INVENTARIO-limpieza.pdf
+
+- **Alimenta:** Cleaning Supplies
+- Es una impresión de *App Inv2* del 18 de septiembre de 2026.
+- Cada fila trae número de parte, foto, descripción, categoría, costo, unidad y cantidad.
+
+## distribucion de cintas y trofeos 3.xlsx
+
+- **Alimenta:** Awards
+- Es un **registro de distribución**, no un catálogo: lleva escuela, orden de compra, cantidades entregadas y saldo.
+- **No tiene fotos.** Para fotografiar medallas, cintas y trofeos hay que hacerlo en el almacén.
+
+## Ojo con las cantidades
+
+**El conteo del Departamento manda sobre Krates.** Cuando el archivo y Krates no coincidan, el archivo se corrige en Krates: así se hizo el 29 de septiembre de 2026, cuando 44 artículos que seguían con una cifra provisional quedaron con el conteo del archivo de materiales. Ese cambio quedó registrado en el historial de cada artículo, como un ajuste.
+
+La excepción son las piezas que ya se entregaron o que tienen historial propio —trofeos, medallas y cintas—: esos llevan su propio registro de entradas, compras y entregas desde 2025, y un archivo que no los menciona no dice nada sobre ellos.
+
+## Regla práctica
+
+> Antes de buscar en internet, abra el archivo del departamento: ya tiene la foto, el número de parte y la descripción del artículo.`,
+  },
+  {
+    key: "inventario-pendientes",
+    title: "Pendientes del inventario",
+    icon: "📌",
+    content: `Trabajo que quedó abierto el **29 de septiembre de 2026**, después de cargar el catálogo y de corregir las cantidades. Ninguno de estos puntos es un error de Krates: son decisiones que corresponden al Departamento.
+
+## Lo que ya se hizo ese día
+
+- **44 artículos** quedaron con el conteo del archivo de materiales, en vez de la cifra provisional con la que se habían cargado. Cada cambio quedó en el historial del artículo como un ajuste.
+- **Se fotografiaron los premios**: el trofeo, las tres medallas de cinta tricolor, las cintas de participación y la medalla del alcalde.
+- **Cuatro conteos se corrigieron a mano** después de esa conciliación: \`05-00073\` Clavos concreto 2 1/2" pasó de 120 a **10**, y \`07-00321\` Limpiador concentrado, \`07-00364\` Absorbedor de humedad y \`07-00425\` Drón 55-60 galón quedaron en **0**.
+- **Se borró \`01-00287\`** Abrazadera bronce toma domiciliaria de 2" con salida a 1". No tenía solicitudes ni movimientos, así que no se perdió nada.
+- **Krates dejó de perder los cambios.** Antes, al editar un artículo se borraba solo lo que se acababa de escribir: el nombre, la cantidad, y las fotos nuevas o tomadas desde el teléfono. Ya está corregido.
+
+## 1. Confirmar dos conteos
+
+Al corregir las cantidades se aplicó el conteo del archivo sobre dos artículos que **ya habían tenido una entrega registrada a mano ese mismo día**, en la solicitud REQ-0029:
+
+| Número de parte | Artículo | Conteo aplicado |
+| --- | --- | --- |
+| \`06-00008\` | Banda de goma #117 | 104 |
+| \`06-00035\` | Binder t/carta, abierto al lado | 112 |
+
+La entrega quedó en el historial y el conteo se aplicó encima, no en lugar de ella. Falta confirmar que el conteo del archivo es **posterior** a esa entrega; si fue anterior, hay que volver a ajustar. Lo decide quien estuvo en el almacén.
+
+## 2. Revisar los nombres de 29 artículos
+
+En 29 de los artículos del archivo de materiales el nombre **no coincide con el que está en Krates**, y no es solo de mayúsculas o de tildes: el archivo suele traer más detalle.
+
+| En Krates | En el archivo |
+| --- | --- |
+| Escoba regular | ESCOBA REGULAR CON PALO |
+| Clorox, galón | CLOROX |
+| Papel sanitario | PAPEL SANITARIO IGUAL O SIMILAR A T-TORK (12 0215 02) |
+| Post-it notes en colores T/ 2" x 3" | POST-IT NOTES EN COLORES T/ 2" X 3" PADS 100 HOJAS |
+| Paños para limpieza, microfibra | — (trae otro texto) |
+
+No se cambiaron solos. El nombre del archivo es más preciso, pero viene en mayúsculas y sin tildes, y a veces **acorta** lo que Krates ya tenía bien puesto. La decisión es qué texto manda; conviene decidirla una vez y aplicarla a los 29, no uno por uno.
+
+## 3. Revisar la categoría de 3 artículos
+
+Tres baterías están en **Electrical Supplies** en Krates y en **Office Supplies** en el archivo:
+
+- \`06-00029\` — Batería alcalina AAA pqte. 4U
+- \`06-00030\` — Batería alcalina AA pqte. 4u
+- \`06-00031\` — Batería C
+
+## 4. Fotografiar 16 artículos
+
+Ninguno de los archivos del Departamento trae su foto, así que hay que hacerlas en el almacén. El procedimiento está en [[Fotos de los artículos]].
+
+> **Actualizado el 29 de septiembre:** ya se fotografiaron los premios —el trofeo, las tres medallas de cinta tricolor, las cintas de participación y la medalla del alcalde— y quedan las 16 de esta lista. Se quitó por error la foto de la **medalla con cinta dorada ERD**, que sí la tenía: hay que volver a tomarla.
+
+**Premios (1)** — Medalla con cinta dorada ERD (se le quitó la foto por error)
+
+**Material de jardinería (3)** — \`09-00514\` Tecomet-EFCO: EW 130 Easy-Work Tap & Go 5" Trimmer Head · \`09-00525\` Vari-Cut Blade 14" X 1.25 FOR K · \`09-00531\` Recogedor de grama para ser instalado en tractor
+
+**Oficina (8)** — \`06-00565\` Carpeta hold sheets · \`12-00020\` Mochilas escolares (back pack 600D) · \`29-00005\` Cartuchera con lápices, goma, regla y sacapuntas · Micas · Libretas grandes para notas (×2) · Libreta para recibo de correspondencias (×2)
+
+**Limpieza (3)** — Mota para escoba industrial · Bolsa de basura, 65 galones · Bulto profesional (laptop)
+
+## 5. 48 artículos quedaron con 100 unidades de relleno
+
+Al cargar el catálogo, los artículos que ningún archivo del Departamento trae con número de partida se dejaron con **100 unidades** como valor provisional, para que se vieran en la lista. **Ese 100 no es un conteo.** Son 48 artículos, casi todos de limpieza y oficina, y hay que contarlos en el almacén y poner la cifra real.
+
+Los que sí tienen número de parte y aparecen en el archivo de materiales ya quedaron corregidos con el conteo del Departamento.
+
+Quedan dos grupos pendientes:
+
+- **24 con número de parte que no están en el archivo de materiales** — sobre todo limpieza y oficina: \`06-00026\`, \`06-00254\`, \`06-00287\`, \`06-00297\`, \`06-00298\`, \`06-00400\`, \`06-00543\`, \`06-00545\`, \`06-00550\`, \`06-00551\`, \`06-00557\`, \`06-00565\`, \`06-00572\`, \`07-00079\`, \`07-00086\`, \`07-00100\`, \`07-00128\`, \`07-00177\`, \`07-00185\`, \`07-00218\`, \`07-00235\`, \`07-00288\`, \`12-00019\`, \`29-00005\`. El listado de limpieza impreso trae los de limpieza, así que de ésos se puede copiar el conteo del PDF en vez de volver a contar.
+- **19 sin número de parte**, que hay que identificar en el almacén.
+
+## 6. Cinco nombres repetidos sin número de parte
+
+Cinco artículos aparecen **dos veces** en el catálogo, sin código, porque llegaron sin número de parte y no había forma de distinguirlos:
+
+- Libretas grandes para notas
+- Manguera de 100ft
+- Libreta para recibo de correspondencias
+- Batería D
+- Mota para escoba industrial
+
+Hay que decidir si son el mismo artículo repetido por error —en cuyo caso se borra uno— o si son piezas distintas. Para distinguirlos hace falta un número de parte o una foto.`,
+  },
+  {
+    key: "inventario-fotos",
+    title: "Fotos de los artículos",
+    icon: "📷",
+    content: `Una foto buena ahorra una llamada: el almacén y la transportación identifican el artículo por la imagen sin tener que buscar el número de parte.
+
+## Cómo tomar una foto útil
+
+1. **Un artículo, una foto.** No agrupe varios artículos en la misma imagen.
+2. **Fondo blanco o liso**, sin objetos alrededor.
+3. **El artículo completo y centrado**, con la etiqueta legible si se puede.
+4. **Que se entienda en miniatura.** La lista de inventario muestra la foto muy pequeña; si a ese tamaño no se reconoce, la foto no sirve.
+5. **La foto es del artículo de esa fila.** No reutilice la foto de otro artículo aunque se parezcan.
+
+## Dónde va la foto
+
+En Krates, al editar un artículo. La foto se guarda con el artículo y aparece en la lista de inventario y en la pantalla de verificación.
+
+## Estado actual
+
+A septiembre de 2026, de **1,188 artículos del catálogo, 1,172 tienen foto** y **16 no la tienen**. El catálogo se armó con el archivo de materiales (1,103 productos con foto), el de jardinería y el listado de limpieza impreso.
+
+Las 16 que faltan son las que ningún archivo del departamento trae imagen. Todas hay que fotografiarlas en el almacén.
+
+> **Actualizado el 29 de septiembre:** ya se fotografiaron el trofeo, las tres medallas de cinta tricolor, las cintas de participación y la medalla del alcalde. Se quitó por error la foto de la medalla con cinta dorada ERD, que hay que volver a tomar.
+
+### Premios (1)
+
+- Medalla con cinta dorada ERD — se le quitó la foto por error, hay que volver a tomarla
+
+### Material de jardinería (3)
+
+La hoja de jardinería trae un espacio en blanco, no una foto. Los tres tienen que fotografiarse en el almacén:
+
+| Número de parte | Artículo |
+| --- | --- |
+| \`09-00514\` | Tecomet-EFCO: EW 130 Easy-Work Tap & Go 5" Trimmer Head |
+| \`09-00525\` | Vari-Cut Blade 14" X 1.25 FOR K |
+| \`09-00531\` | Recogedor de grama para ser instalado en tractor |
+
+### Material de oficina (8)
+
+Carpeta hold sheets (\`06-00565\`) · Mochilas escolares (back pack 600D) (\`12-00020\`) · Cartuchera con lápices, goma, regla y saca puntas (\`29-00005\`) · Micas · Libretas grandes para notas (×2) · Libreta para recibo de correspondencias (×2)
+
+### Limpieza (3) y Equipos de computación (1)
+
+Bolsa de basura, 65 galones · Mota para escoba industrial (×2) · Bulto profesional (laptop)
+
+El resumen de todo lo que falta está en [[Pendientes del inventario]].
+
+> Cuando fotografíe un artículo, actualice esta lista para que el próximo no busque lo que ya está hecho.`,
+  },
+  {
+    key: "cuentas-de-acceso",
+    title: "Cuentas de acceso del personal",
+    icon: "🔑",
+    content: `Cada persona del Departamento entra a los sistemas de AXXES con su propia cuenta. **Las credenciales las maneja el Departamento y no se publican en este espacio.**
+
+## Cómo se llama una cuenta
+
+El patrón es \`usuario@bayamonpr.gov\`, todo en minúsculas, donde \`usuario\` es el nombre de usuario que asigna el Departamento. El dominio no lleva punto: \`bayamonpr.gov\`, no \`bayamon.pr.gov\`.
+
+Por ejemplo, si el usuario de una persona es \`aflores4\`, su cuenta es \`aflores4@bayamonpr.gov\`.
+
+## Qué se hizo el 29 de septiembre de 2026
+
+Se dieron de alta las cuentas del personal del Departamento de Educación, siguiendo la lista de usuarios y contraseñas que el propio Departamento entregó:
+
+- **26 cuentas** creadas en el espacio de Educación Municipal.
+- **24** con acceso para entrar al sistema.
+- **2** quedan como personas registradas pero **todavía sin acceso**, porque en la lista no venían con usuario ni contraseña.
+- Todas están en el departamento **Educación**, con permisos de usuario general.
+
+Las contraseñas se guardaron cifradas. Nadie —ni el Departamento ni AXXES— puede leerlas después; si alguien la pierde, se genera una nueva.
+
+## Pendientes que decide el Departamento
+
+Estas tres cosas vinieron de la lista y hay que resolverlas con la oficina:
+
+1. **Cinco personas comparten la misma contraseña.** Cualquiera que la conozca puede entrar como cualquiera de las cinco. Conviene asignarles una contraseña individual.
+2. **Dos personas tienen el mismo usuario.** Como el usuario es único, solo se pudo crear una cuenta. La segunda persona necesita un usuario propio.
+3. **Dos personas no tenían usuario ni contraseña** en la lista. Cuando el Departamento las envíe, se les activa el acceso.
+
+## Pedir una cuenta nueva
+
+Las cuentas las da AXXES. Para solicitarla hay que tener a mano: nombre completo, usuario elegido por el Departamento, contraseña inicial y el espacio de trabajo (por ejemplo, Educación Municipal).
+
+## Cuando algo no funciona
+
+Un problema con Krates —un artículo que no se deja editar, una foto que no sube, un conteo que no cambia— se reporta, no se resuelve a mano ni se trabaja alrededor. La vía está en [[Reportar un problema]].`,
   },
 ]
 

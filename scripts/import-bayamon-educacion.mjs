@@ -33,6 +33,9 @@ const PARENT = {
   "head-start-requisitos": "head-start",
   "head-start-programas": "head-start",
   "head-start-centros": "head-start",
+  "inventario-fuentes": "inventario",
+  "inventario-fotos": "inventario",
+  "inventario-pendientes": "inventario",
 }
 
 const depth = (key) => (PARENT[key] ? 1 + depth(PARENT[key]) : 0)
@@ -108,9 +111,14 @@ if (spaceId) {
 // --- Reconcile the pages -----------------------------------------------------
 // Parents are written before their children, so a child's parent_id resolves.
 const ordered = [...PAGES].sort((a, b) => depth(a.key) - depth(b.key))
-const existingPages = DRY
-  ? []
-  : await sql`select id, title, content, parent_id from nexus_pages where space_id = ${spaceId} and deleted_at is null`
+
+// The existing pages are read even on a dry run. A dry run has to compare
+// against what is really there, otherwise it reports every page as new and
+// hides both the updates and the pages it would retire — which is the whole
+// point of asking for a dry run first.
+const existingPages = spaceId
+  ? await sql`select id, title, content, parent_id from nexus_pages where space_id = ${spaceId} and deleted_at is null`
+  : []
 
 const byTitle = new Map(existingPages.map((p) => [p.title.toLowerCase(), p]))
 const idByKey = new Map()
@@ -128,8 +136,14 @@ for (const [position, page] of ordered.entries()) {
   const prior = byTitle.get(page.title.toLowerCase())
 
   if (DRY) {
-    if (prior) updated++
-    else created++
+    if (prior) {
+      // Mark it kept, or the reconciliation below would report every page in
+      // the space as stale and a dry run would look like a mass deletion.
+      keptIds.add(prior.id)
+      updated++
+    } else {
+      created++
+    }
     idByKey.set(page.key, prior?.id ?? `dry-run:${page.key}`)
     continue
   }

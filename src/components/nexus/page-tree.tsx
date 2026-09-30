@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState, useTransition } from "react"
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import type { TreePage } from "@/lib/nexus/types"
@@ -53,45 +53,55 @@ export function PageTree({ spaceId, spaceName, spaceIcon, pages: serverPages }: 
     return () => window.removeEventListener("click", close)
   }, [menu])
 
-  const newPage = (parentId: string | null) =>
-    start(async () => {
-      const { href } = await createPage(spaceId, parentId)
-      if (parentId) setOpen((o) => new Set(o).add(parentId))
-      router.push(href)
-      router.refresh()
-    })
+  const newPage = useCallback(
+    (parentId: string | null) =>
+      start(async () => {
+        const { href } = await createPage(spaceId, parentId)
+        if (parentId) setOpen((o) => new Set(o).add(parentId))
+        router.push(href)
+        router.refresh()
+      }),
+    [spaceId, router],
+  )
 
-  const Row = ({ page, depth }: { page: TreePage; depth: number }) => {
-    const kids = children.get(page.id) ?? []
-    const isOpen = open.has(page.id)
-    return (
-      <li>
-        <div
-          className={`group flex items-center gap-1 rounded-md pr-1 text-sm ${current === page.id ? "bg-panel-2 text-text" : "text-muted hover:bg-panel-2 hover:text-text"}`}
-          style={{ paddingLeft: 4 + depth * 14 }}
-          onContextMenu={(e) => { e.preventDefault(); setMoveOpen(false); setMenu({ x: e.clientX, y: e.clientY, page }) }}
-          data-tree-page={page.title}
-        >
-          <button
-            type="button"
-            className={`grid size-5 shrink-0 place-items-center rounded text-[10px] ${kids.length ? "hover:bg-line" : "opacity-0"}`}
-            onClick={() => setOpen((o) => { const n = new Set(o); if (n.has(page.id)) n.delete(page.id); else n.add(page.id); return n })}
-            aria-label={isOpen ? "Collapse" : "Expand"}
-            tabIndex={kids.length ? 0 : -1}
+  // Rendered as a stable callback rather than an inner component. A component
+  // declared inside the render body is a *new type* on every render, so React
+  // unmounts and rebuilds the entire tree instead of updating it — which made the
+  // rail stutter on every keystroke anywhere in the app.
+  const Row = useCallback(
+    ({ page, depth }: { page: TreePage; depth: number }) => {
+      const kids = children.get(page.id) ?? []
+      const isOpen = open.has(page.id)
+      return (
+        <li>
+          <div
+            className={`group flex items-center gap-1 rounded-md pr-1 text-sm ${current === page.id ? "bg-panel-2 text-text" : "text-muted hover:bg-panel-2 hover:text-text"}`}
+            style={{ paddingLeft: 4 + depth * 14 }}
+            onContextMenu={(e) => { e.preventDefault(); setMoveOpen(false); setMenu({ x: e.clientX, y: e.clientY, page }) }}
+            data-tree-page={page.title}
           >
-            {isOpen ? "▾" : "▸"}
-          </button>
-          <Link href={`/dashboard/s/${spaceId}/${page.id}`} className="min-w-0 flex-1 truncate py-1.5">
-            <span className="mr-1.5">{page.icon ?? "📄"}</span>{page.title}
-          </Link>
-          <button type="button" onClick={() => newPage(page.id)} className="rounded px-1 opacity-0 hover:bg-line group-hover:opacity-100" aria-label={`New page inside ${page.title}`}>+</button>
-        </div>
-        {isOpen && kids.length > 0 && (
-          <ul>{kids.map((k) => <Row key={k.id} page={k} depth={depth + 1} />)}</ul>
-        )}
-      </li>
-    )
-  }
+            <button
+              type="button"
+              className={`grid size-5 shrink-0 place-items-center rounded text-[10px] ${kids.length ? "hover:bg-line" : "opacity-0"}`}
+              onClick={() => setOpen((o) => { const n = new Set(o); if (n.has(page.id)) n.delete(page.id); else n.add(page.id); return n })}
+              aria-label={isOpen ? "Collapse" : "Expand"}
+              tabIndex={kids.length ? 0 : -1}
+            >
+              {isOpen ? "▾" : "▸"}
+            </button>
+            <Link href={`/dashboard/s/${spaceId}/${page.id}`} className="min-w-0 flex-1 truncate py-1.5">
+              <span className="mr-1.5">{page.icon ?? "📄"}</span>{page.title}
+            </Link>
+            <button type="button" onClick={() => newPage(page.id)} className="rounded px-1 opacity-0 hover:bg-line group-hover:opacity-100" aria-label={`New page inside ${page.title}`}>+</button>
+          </div>
+          {isOpen && kids.length > 0 && (
+            <ul>{kids.map((k) => <Row key={k.id} page={k} depth={depth + 1} />)}</ul>
+          )}
+        </li>
+      )
+    },
+    [children, open, current, spaceId, newPage],
+  )
 
   const roots = children.get(null) ?? []
 

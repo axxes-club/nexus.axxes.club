@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState, useTransition } from "react"
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import ReactMarkdown from "react-markdown"
@@ -12,6 +12,9 @@ import { createPage, restoreVersion, savePage } from "@/lib/nexus/actions"
 type Mode = "edit" | "split" | "preview"
 type Version = { id: string; title: string; createdAt: string; author: string | null; size: number }
 const SAVE_DELAY = 800
+/** Autosave pauses arrive far faster than a round-trip completes. Anything saved
+ *  inside this window is already covered by the refresh it is waiting on. */
+const REFRESH_COALESCE_MS = 1500
 const MODE_KEY = "nexus:mode"
 
 export function Editor({ page, links, backlinks, versions }: { page: PageT; links: Record<string, string>; backlinks: LinkT[]; versions: Version[] }) {
@@ -25,8 +28,11 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
   const [, start] = useTransition()
   const area = useRef<HTMLTextAreaElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const refreshIn = useRef(false)
+  // The autosave payload. Kept in a ref and written at the point of edit rather
+  // than during render, so it always holds the newest text even when several
+  // edits land inside one React batch.
   const latest = useRef({ title, content })
-  latest.current = { title, content }
 
   useEffect(() => {
     try {
@@ -42,7 +48,14 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
     setStatus("saving")
     await savePage(page.id, latest.current)
     setStatus("saved")
+    // router.refresh() re-renders the whole server tree — the rail, the backlinks
+    // panel, the version list. Autosave fires on every typing pause, so calling it
+    // every time queued a full RSC round-trip behind the keyboard. Coalescing them
+    // keeps the panel eventually correct without one request per sentence.
+    if (refreshIn.current) return
+    refreshIn.current = true
     router.refresh()
+    setTimeout(() => { refreshIn.current = false }, REFRESH_COALESCE_MS)
   }, [page.id, router])
 
   const schedule = () => {
@@ -50,6 +63,15 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(flush, SAVE_DELAY)
   }
+
+  // The one place content changes, so the autosave payload can never drift from
+  // what is on screen.
+  const edit = useCallback((next: string) => {
+    latest.current = { ...latest.current, content: next }
+    setContent(next)
+    schedule()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flush])
 
   // Save before leaving if something is pending
   useEffect(() => {
@@ -70,8 +92,7 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
     const { selectionStart: a, selectionEnd: b, value } = el
     const selected = value.slice(a, b) || placeholder
     const next = value.slice(0, a) + before + selected + after + value.slice(b)
-    setContent(next)
-    schedule()
+    edit(next)
     requestAnimationFrame(() => { el.focus(); el.setSelectionRange(a + before.length, a + before.length + selected.length) })
   }
   const linePrefix = (prefix: string) => {
@@ -79,8 +100,7 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
     if (!el) return
     const { selectionStart: a, value } = el
     const lineStart = value.lastIndexOf("\n", a - 1) + 1
-    setContent(value.slice(0, lineStart) + prefix + value.slice(lineStart))
-    schedule()
+    edit(value.slice(0, lineStart) + prefix + value.slice(lineStart))
     requestAnimationFrame(() => { el.focus(); el.setSelectionRange(a + prefix.length, a + prefix.length) })
   }
 
@@ -92,7 +112,12 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
     if (e.key === "Tab") { e.preventDefault(); wrap("  ", "") }
   }
 
-  const rendered = renderWikiLinks(content, (t) => links[t.toLowerCase()] ?? null)
+  // Parsing markdown is the most expensive thing this component does, so the
+  // preview renders from a value that lags typing by a tick. The textarea stays
+  // instant; the preview catches up a frame later instead of blocking each
+  // keystroke on a full ReactMarkdown parse of the whole page.
+  const deferred = useDeferredValue(content)
+  const rendered = useMemo(() => renderWikiLinks(deferred, (t) => links[t.toLowerCase()] ?? null), [deferred, links])
 
   const openLink = (href: string) => {
     if (!href.startsWith("#new:")) return false
@@ -143,7 +168,7 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
             </button>
             <input
               value={title}
-              onChange={(e) => { setTitle(e.target.value); schedule() }}
+              onChange={(e) => { const v = e.target.value; latest.current = { ...latest.current, title: v }; setTitle(v); schedule() }}
               placeholder="Untitled"
               className="min-w-0 flex-1 bg-transparent text-4xl font-semibold tracking-tight outline-none placeholder:text-muted/50"
               aria-label="Page title"
@@ -156,7 +181,7 @@ export function Editor({ page, links, backlinks, versions }: { page: PageT; link
               <textarea
                 ref={area}
                 value={content}
-                onChange={(e) => { setContent(e.target.value); schedule() }}
+                onChange={(e) => edit(e.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder={"Start writing… Markdown works: # headings, - lists, - [ ] tasks, **bold**, [[Page links]]"}
                 className="min-h-[60vh] w-full resize-none rounded-xl border border-line bg-panel/60 p-5 font-mono text-[14px] leading-relaxed outline-none focus:border-accent/60"
