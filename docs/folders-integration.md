@@ -43,7 +43,7 @@ These changes span three feature branches: Nexus `feat/folders-assets-nexus-ux`,
 1. Review and apply members' `scripts/folders-ownership.sql` through the platform migration process. Existing assets stay workspace-owned; historical uploaders are not invented. The migration adds persistent folders, owner constraints, app/folder grants, upload intents, transfer audit events, and a cleanup outbox.
 2. Enable private ACL support in the shared UploadThing project. Review the Folders `scripts/protect-storage.mjs` inventory in dry-run mode, then make historical hosted objects private before exposing the new lifecycle controls. Other apps serving their raw public URLs must switch to authenticated delivery as part of this rollout.
 3. Configure `DATABASE_URL`, `BETTER_AUTH_SECRET`, shared `UPLOADTHING_TOKEN` and session cookie domain in both apps. Set Nexus `FOLDERS_URL` to the intended Folders deployment; its default is `https://dam.axxes.club`. Both apps must use the shared authentication secret/cookie domain already established by Handshake.
-4. Configure Folders `CRON_SECRET`; its hourly Vercel job calls `/api/cron/expire` with bearer authorization. The route supports GET and POST; access-time checks enforce immediate expiration regardless of scheduling delays. No automatic permanent Trash deletion is enabled.
+4. Configure Folders `CRON_SECRET`; its daily Vercel job calls `/api/cron/expire` with bearer authorization. The route supports GET and POST; access-time checks enforce immediate expiration regardless of scheduling delays. No automatic permanent Trash deletion is enabled.
 5. Deploy Folders, then Nexus. Verify a personal upload, workspace upload, shared-folder upload, phone handoff, inline image, file download, expiration, Trash, restoration, ownership transfer and multi-page usage with test accounts.
 
 ## Verification commands
@@ -55,3 +55,9 @@ Folders: `npm test`, `npx tsc --noEmit --incremental false`, `npm run build`. It
 Members migration fixture: `NODE_PATH=../dam.axxes.club/node_modules node scripts/check-folders-migration.cjs`. Members' TypeScript check verifies schema compatibility with its consumers.
 
 Browser smoke verification used actual Nexus components with external actions/API boundaries stubbed. It exercised desktop keyboard menus, mobile focus handling, failed rename recovery, movement/deletion scope, space editing and existing asset attachment. Real provider uploads require the migrated test deployment and credentials above.
+
+## Production rollout attempt — 2026-09-30
+
+Vercel rejected deployment because the account reached its daily deployment quota (`api-deployments-free-per-day`). Folders cron was changed to daily to match the current Hobby plan; read-time expiration stays immediate. Nexus production now has the shared upload token and Folders URL configured, and Folders has its cron secret. No new deployment was promoted.
+
+The first ownership migration rolled back atomically on six historical URL assets whose workspaces no longer exist. The backfill now only creates folders for existing workspaces, preserving those asset records, with a regression fixture. Production still has the original schema and 11,306 assets. Historical storage remains unchanged. Resume migration and deployment after quota availability, then verify private uploads and phone handoff. Office currently embeds raw storage URLs in imported content; those references need authenticated delivery before protecting its four linked hosted assets.
