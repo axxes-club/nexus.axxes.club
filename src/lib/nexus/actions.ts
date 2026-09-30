@@ -7,11 +7,14 @@ import { db, schema as s } from "@/lib/db"
 import { requireContext } from "@/lib/context"
 import { linkedTitlesOutsideCode } from "./links"
 import { searchPages } from "./data"
+import { assertMutationRole, descendantIds, duplicateWithCleanup } from "./management"
+import { copyPageAssets, detachPageAssets, syncPageAssets } from "@/lib/folders/server"
 
 const SNAPSHOT_EVERY_MS = 10 * 60 * 1000
 
 async function spaceFor(spaceId: string) {
   const ctx = await requireContext()
+  assertMutationRole(ctx.role)
   const [space] = await db.select().from(s.nexusSpaces).where(and(eq(s.nexusSpaces.id, spaceId), eq(s.nexusSpaces.tenantId, ctx.tenant.id), isNull(s.nexusSpaces.deletedAt)))
   if (!space) throw new Error("Space not found")
   return { ctx, space }
@@ -19,8 +22,10 @@ async function spaceFor(spaceId: string) {
 
 async function pageFor(pageId: string) {
   const ctx = await requireContext()
+  assertMutationRole(ctx.role)
   const [page] = await db.select().from(s.nexusPages).where(and(eq(s.nexusPages.id, pageId), eq(s.nexusPages.tenantId, ctx.tenant.id), isNull(s.nexusPages.deletedAt)))
   if (!page) throw new Error("Page not found")
+  await spaceFor(page.spaceId)
   return { ctx, page }
 }
 
@@ -39,6 +44,7 @@ async function backfillLinksTo(tenantId: string, pageId: string, title: string) 
 
 export async function createSpace(form: FormData) {
   const ctx = await requireContext()
+  assertMutationRole(ctx.role)
   const name = String(form.get("name") ?? "").trim().slice(0, 80)
   if (!name) throw new Error("Name the space")
   const icon = String(form.get("icon") ?? "").trim().slice(0, 4) || "📘"
@@ -61,7 +67,7 @@ export async function createSpace(form: FormData) {
 export async function createPage(spaceId: string, parentId: string | null, title = "Untitled") {
   const { ctx, space } = await spaceFor(spaceId)
   if (parentId) {
-    const [parent] = await db.select({ id: s.nexusPages.id }).from(s.nexusPages).where(and(eq(s.nexusPages.id, parentId), eq(s.nexusPages.spaceId, space.id)))
+    const [parent] = await db.select({ id: s.nexusPages.id }).from(s.nexusPages).where(and(eq(s.nexusPages.id, parentId), eq(s.nexusPages.spaceId, space.id), eq(s.nexusPages.tenantId, ctx.tenant.id), isNull(s.nexusPages.deletedAt)))
     if (!parent) throw new Error("Parent page not found")
   }
   const [{ pos }] = await db
@@ -89,9 +95,10 @@ export async function savePage(pageId: string, patch: { title?: string; content?
     await db.insert(s.nexusPageVersions).values({ pageId: page.id, title: page.title, content: page.content, authorId: page.updatedById ?? page.createdById })
   }
 
-  await db
+  const savedWithAssets = patch.content !== undefined && await syncPageAssets(page.content, { pageId: page.id, tenantId: page.tenantId, title, content, userId: ctx.userId, ...(patch.icon !== undefined ? { icon: patch.icon?.slice(0, 16) || null } : {}) })
+  if (!savedWithAssets) await db
     .update(s.nexusPages)
-    .set({ title, content, ...(patch.icon !== undefined ? { icon: patch.icon?.slice(0, 4) || null } : {}), updatedById: ctx.userId, updatedAt: new Date() })
+    .set({ title, content, ...(patch.icon !== undefined ? { icon: patch.icon?.slice(0, 16) || null } : {}), updatedById: ctx.userId, updatedAt: new Date() })
     .where(eq(s.nexusPages.id, page.id))
 
   if (patch.content !== undefined) {
@@ -115,11 +122,13 @@ export async function renamePage(pageId: string, title: string) {
 export async function movePage(pageId: string, newParentId: string | null) {
   const { page } = await pageFor(pageId)
   // Refuse to move a page under itself or one of its descendants
+  const visited = new Set<string>()
   let cursor = newParentId
   while (cursor) {
-    if (cursor === page.id) throw new Error("A page can't go inside itself")
-    const [p] = await db.select({ parentId: s.nexusPages.parentId, spaceId: s.nexusPages.spaceId }).from(s.nexusPages).where(eq(s.nexusPages.id, cursor))
-    if (!p || p.spaceId !== page.spaceId) throw new Error("Pick a page in the same space")
+    if (cursor === page.id || visited.has(cursor)) throw new Error("A page can't go inside itself or its descendants")
+    visited.add(cursor)
+    const [p] = await db.select({ parentId: s.nexusPages.parentId }).from(s.nexusPages).where(and(eq(s.nexusPages.id, cursor), eq(s.nexusPages.spaceId, page.spaceId), eq(s.nexusPages.tenantId, page.tenantId), isNull(s.nexusPages.deletedAt)))
+    if (!p) throw new Error("Pick an available page in the same space")
     cursor = p.parentId
   }
   await db.update(s.nexusPages).set({ parentId: newParentId, updatedAt: new Date() }).where(eq(s.nexusPages.id, page.id))
@@ -127,14 +136,12 @@ export async function movePage(pageId: string, newParentId: string | null) {
 }
 
 export async function deletePage(pageId: string) {
-  const { page } = await pageFor(pageId)
-  // Soft-delete the page and everything below it
-  const ids = [page.id]
-  for (let i = 0; i < ids.length; i++) {
-    const kids = await db.select({ id: s.nexusPages.id }).from(s.nexusPages).where(and(eq(s.nexusPages.parentId, ids[i]), isNull(s.nexusPages.deletedAt)))
-    ids.push(...kids.map((k) => k.id))
-  }
-  await db.update(s.nexusPages).set({ deletedAt: new Date() }).where(inArray(s.nexusPages.id, ids))
+  const { ctx, page } = await pageFor(pageId)
+  assertMutationRole(ctx.role, true)
+  const pages = await db.select({ id: s.nexusPages.id, parentId: s.nexusPages.parentId }).from(s.nexusPages).where(and(eq(s.nexusPages.spaceId, page.spaceId), eq(s.nexusPages.tenantId, page.tenantId), isNull(s.nexusPages.deletedAt)))
+  const ids = [...descendantIds(pages, page.id)]
+  await detachPageAssets(ids)
+  await db.update(s.nexusPages).set({ deletedAt: new Date() }).where(and(eq(s.nexusPages.tenantId, page.tenantId), eq(s.nexusPages.spaceId, page.spaceId), inArray(s.nexusPages.id, ids)))
   await db.delete(s.nexusLinks).where(inArray(s.nexusLinks.fromPageId, ids))
   revalidatePath(`/dashboard/s/${page.spaceId}`, "layout")
   return { deleted: ids.length }
@@ -154,4 +161,44 @@ export async function search(q: string) {
   const ctx = await requireContext()
   if (q.trim().length < 2) return []
   return searchPages(ctx.tenant.id, q.trim().slice(0, 100))
+}
+
+export async function updateSpace(id: string, patch: { name: string; icon: string; description: string }) {
+  const { space } = await spaceFor(id)
+  const name = patch.name.trim().slice(0, 80)
+  if (!name) throw new Error("Name the space")
+  await db.update(s.nexusSpaces).set({ name, icon: patch.icon.trim().slice(0, 16) || "📘", description: patch.description.trim().slice(0, 2000) || null }).where(eq(s.nexusSpaces.id, space.id))
+  revalidatePath("/dashboard", "layout")
+}
+
+export async function deleteSpace(id: string) {
+  const { ctx, space } = await spaceFor(id)
+  assertMutationRole(ctx.role, true)
+  const pages = await db.select({ id: s.nexusPages.id }).from(s.nexusPages).where(and(eq(s.nexusPages.spaceId, space.id), eq(s.nexusPages.tenantId, ctx.tenant.id), isNull(s.nexusPages.deletedAt)))
+  const ids = pages.map(p => p.id)
+  await detachPageAssets(ids)
+  if (ids.length) {
+    await db.update(s.nexusPages).set({ deletedAt: new Date() }).where(inArray(s.nexusPages.id, ids))
+    await db.delete(s.nexusLinks).where(inArray(s.nexusLinks.fromPageId, ids))
+  }
+  await db.update(s.nexusSpaces).set({ deletedAt: new Date() }).where(eq(s.nexusSpaces.id, space.id))
+  revalidatePath("/dashboard", "layout")
+}
+
+export async function duplicatePage(id: string) {
+  const { page } = await pageFor(id)
+  const copy = await duplicateWithCleanup(
+    () => createPage(page.spaceId, page.parentId, `${page.title} (copy)`),
+    async copy => {
+      await savePage(copy.id, { content: page.content, icon: page.icon })
+      await copyPageAssets(page.id, copy.id)
+    },
+    async copy => {
+      await db.update(s.nexusPages).set({ deletedAt: new Date() }).where(and(eq(s.nexusPages.id, copy.id), eq(s.nexusPages.tenantId, page.tenantId)))
+      await db.delete(s.nexusLinks).where(inArray(s.nexusLinks.fromPageId, [copy.id]))
+      revalidatePath(`/dashboard/s/${page.spaceId}`, "layout")
+    },
+  )
+  revalidatePath(`/dashboard/s/${page.spaceId}`, "layout")
+  return copy
 }
