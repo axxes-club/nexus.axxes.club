@@ -21,7 +21,7 @@ export default async function SpaceLayout({ children, params }: { children: Reac
   }
   return (
     <div className="flex">
-      <PageTree spaceId={space.id} spaceName={space.name} spaceIcon={space.icon} pages={pages} />
+      <PageTree spaceId={space.id} spaceName={space.name} spaceIcon={space.icon} spaceDescription={space.description} pages={pages} canWrite={["owner", "admin", "manager", "member"].includes(ctx.role)} canDelete={["owner", "admin", "manager"].includes(ctx.role)} />
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   )
