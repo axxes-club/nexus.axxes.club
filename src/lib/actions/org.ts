@@ -2,7 +2,7 @@
 
 import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { and, eq, isNull } from "drizzle-orm"
+import { and, eq, isNull, ne } from "drizzle-orm"
 import { auth } from "@/lib/auth"
 import { db, schema } from "@/lib/db"
 import { ORG_COOKIE } from "@/lib/context"
@@ -14,23 +14,30 @@ import { ORG_COOKIE } from "@/lib/context"
  * cookie is a preference and must never be a way in: a hand-edited cookie
  * naming an organization the person does not belong to is simply refused.
  */
-export async function switchOrganization(tenantId: string): Promise<void> {
+export async function switchOrganization(tenantId: string): Promise<{ error?: string }> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tenantId)) {
+    return { error: "Invalid organization." }
+  }
   const session = await auth.api.getSession({ headers: await headers() })
-  if (!session?.user) return
+  if (!session?.user) return { error: "Please sign in again to switch organization." }
 
   const [membership] = await db
     .select({ id: schema.tenantMemberships.id })
     .from(schema.tenantMemberships)
+    .innerJoin(schema.tenants, eq(schema.tenants.id, schema.tenantMemberships.tenantId))
     .where(
       and(
         eq(schema.tenantMemberships.userId, session.user.id),
         eq(schema.tenantMemberships.tenantId, tenantId),
         isNull(schema.tenantMemberships.deletedAt),
+        isNull(schema.tenants.deletedAt),
+        ne(schema.tenants.status, "suspended"),
+        ne(schema.tenants.status, "cancelled"),
       ),
     )
     .limit(1)
 
-  if (!membership) return
+  if (!membership) return { error: "You no longer have access to this organization." }
 
   const secure = (await headers()).get("x-forwarded-proto") === "https"
   ;(await cookies()).set(ORG_COOKIE, tenantId, {
@@ -40,6 +47,7 @@ export async function switchOrganization(tenantId: string): Promise<void> {
     path: "/",
     maxAge: 60 * 60 * 24 * 365,
   })
+  return {}
 }
 
 /**
@@ -55,7 +63,8 @@ export async function switchOrganization(tenantId: string): Promise<void> {
  * this into an open redirect.
  */
 export async function openInOrganization(tenantId: string, path: string): Promise<void> {
-  await switchOrganization(tenantId)
-  const safe = path.startsWith("/") && !path.startsWith("//") ? path : "/dashboard"
+  const result = await switchOrganization(tenantId)
+  if (result.error) return
+  const safe = path.startsWith("/") && !path.startsWith("//") && !path.includes("\\") && !/[\u0000-\u001f]/.test(path) ? path : "/dashboard"
   redirect(safe)
 }

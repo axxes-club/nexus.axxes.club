@@ -2,7 +2,7 @@ import "server-only"
 import { cache } from "react"
 import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { and, desc, eq, isNull } from "drizzle-orm"
+import { and, desc, eq, isNull, ne } from "drizzle-orm"
 import { auth } from "@/lib/auth"
 import { db, schema } from "@/lib/db"
 
@@ -52,6 +52,8 @@ export const listMemberships = cache(async (userId: string): Promise<Membership[
         eq(schema.tenantMemberships.userId, userId),
         isNull(schema.tenantMemberships.deletedAt),
         isNull(schema.tenants.deletedAt),
+        ne(schema.tenants.status, "suspended"),
+        ne(schema.tenants.status, "cancelled"),
       ),
     )
     .orderBy(desc(schema.tenantMemberships.isPrimary))
