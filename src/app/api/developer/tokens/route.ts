@@ -1,3 +1,4 @@
+import {wrapAdmission} from '@/lib/security/admission-server';
 import { NextResponse } from "next/server"
 import { requireContext } from "@/lib/context"
 import { createToken, isScope, listTokens, revokeToken, type TokenScope } from "@/lib/developer/tokens"
@@ -5,7 +6,7 @@ import { createToken, isScope, listTokens, revokeToken, type TokenScope } from "
 export const dynamic = "force-dynamic"
 
 /** GET — the caller's live tokens. Never includes a secret. */
-export async function GET() {
+async function GETHandler() {
   const ctx = await requireContext()
   return NextResponse.json({ tokens: await listTokens(ctx.userId) })
 }
@@ -17,7 +18,7 @@ export async function GET() {
  * that grants more than the person already has. `scopes` narrows; it never
  * widens.
  */
-export async function POST(req: Request) {
+async function POSTHandler(req: Request) {
   const ctx = await requireContext()
   const body = await req.json().catch(() => ({}))
 
@@ -62,10 +63,16 @@ export async function POST(req: Request) {
 }
 
 /** DELETE — revoke by ?id=. Revoked, not deleted, so history survives. */
-export async function DELETE(req: Request) {
+async function DELETEHandler(req: Request) {
   const ctx = await requireContext()
   const id = new URL(req.url).searchParams.get("id")
   if (!id) return NextResponse.json({ message: "id is required" }, { status: 400 })
   await revokeToken(ctx.userId, id)
   return NextResponse.json({ ok: true })
 }
+
+export const GET=wrapAdmission(GETHandler,'src/app/api/developer/tokens/route.ts'+':GET',12000);
+
+export const POST=wrapAdmission(POSTHandler,'src/app/api/developer/tokens/route.ts'+':POST',3000);
+
+export const DELETE=wrapAdmission(DELETEHandler,'src/app/api/developer/tokens/route.ts'+':DELETE',3000);

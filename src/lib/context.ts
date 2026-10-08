@@ -1,3 +1,4 @@
+import {admitAction} from "@/lib/security/admission-server";
 import "server-only"
 import { cache } from "react"
 import { cookies, headers } from "next/headers"
@@ -52,8 +53,7 @@ export const listMemberships = cache(async (userId: string): Promise<Membership[
         eq(schema.tenantMemberships.userId, userId),
         isNull(schema.tenantMemberships.deletedAt),
         isNull(schema.tenants.deletedAt),
-        ne(schema.tenants.status, "suspended"),
-        ne(schema.tenants.status, "cancelled"),
+        eq(schema.tenants.status, "active"),
       ),
     )
     .orderBy(desc(schema.tenantMemberships.isPrimary))
@@ -89,6 +89,7 @@ export const getContext = cache(async (): Promise<AppContext | null> => {
     memberships.find((m) => m.isPrimary) ??
     memberships[0]
 
+  await admitAction(session.user.id,chosen.tenantId);
   return {
     userId: session.user.id,
     user: { name: session.user.name, email: session.user.email },

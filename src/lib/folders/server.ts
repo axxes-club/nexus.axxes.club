@@ -13,7 +13,7 @@ export async function foldersRequest(action: string, data: Record<string, unknow
   if (!secret) throw new Error("Folders integration is not configured")
   const token = signEnvelope({ ...data, appKey: "nexus", action, exp: Date.now() + 60_000 }, secret)
   const res = await fetch(`${foldersOrigin()}/api/apps/${action}`, {
-    method: "POST", headers: { "Content-Type": "application/json", ...(cookie ? { Cookie: cookie } : {}) },
+    method: "POST", headers: { "Content-Type": "application/json", Origin: new URL(foldersOrigin()).origin, ...(cookie ? { Cookie: cookie } : {}) },
     body: JSON.stringify({ appKey: "nexus", token }), cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(30_000),
   })
   if (!res.ok && !(action === "deliver" && res.status >= 300 && res.status < 400)) {

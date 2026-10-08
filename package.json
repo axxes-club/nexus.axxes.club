@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "test:security": "node --import tsx --test tests/security-signup.test.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

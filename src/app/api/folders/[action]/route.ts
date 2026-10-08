@@ -1,10 +1,11 @@
+import {wrapAdmission} from '@/lib/security/admission-server';
 import { NextRequest } from "next/server"
 import { foldersRequest, pageContext } from "@/lib/folders/server"
 import { signEnvelope } from "@/lib/folders/envelope"
 import QRCode from "qrcode"
 import { publicOrigin } from "@/lib/public-origin"
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ action: string }> }) {
+async function POSTHandler(req: NextRequest, { params }: { params: Promise<{ action: string }> }) {
   try {
     const origin = req.headers.get("origin")
     if (origin && origin !== req.nextUrl.origin && origin !== publicOrigin(req) && origin !== process.env.BETTER_AUTH_URL?.replace(/\/$/, "")) return Response.json({ error: "Request origin is not allowed" }, { status: 403 })
@@ -27,3 +28,5 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ act
     return Response.json({ error: error instanceof Error ? error.message : "Folders unavailable" }, { status: 400 })
   }
 }
+
+export const POST=wrapAdmission(POSTHandler,'src/app/api/folders/[action]/route.ts'+':POST',3000);
