@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0a0a0b;
-  --panel: #111113;
-  --panel-2: #17171a;
-  --line: #26262b;
-  --text: #ededef;
-  --muted: #8b8b93;
-  --accent: var(--product-accent, #c8ff3d);
-  --accent-ink: #0a0a0b;
-  --danger: #ff5c5c;
+  /* AXXES app style (2026-10-09): the axxes.app look, shared by every AXXES app. */
+  --bg: #07070a;
+  --bg-2: #0c0c11;
+  --panel: #121218;
+  --panel-2: #1a1a22;
+  --line: rgb(255 255 255 / 0.08);
+  --line-2: rgb(255 255 255 / 0.14);
+  --text: #f4f5f8;
+  --muted: #9096a3;
+  --accent: #6e95f2;
+  --accent-deep: #2660d9;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(110 149 242 / 0.14);
+  --danger: #ff6b6b;
+  --glow: rgb(56 104 230 / 0.45);
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 12px 32px -14px rgb(0 0 0 / 0.7);
+  --shadow-lift: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 30px 80px -24px rgb(0 0 0 / 0.8);
 }
 
 @theme inline {
@@ -22,24 +30,45 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-danger: var(--danger);
+  --color-bg-2: var(--bg-2);
+  --color-line-2: var(--line-2);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-soft: var(--accent-soft);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
   --font-mono: var(--font-geist-mono), ui-monospace;
 }
 
 html { color-scheme: dark; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+body { background: radial-gradient(1100px 620px at 50% -240px, rgb(56 104 230 / 0.22), transparent 70%) no-repeat, var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
 @utility input {
-  @apply w-full rounded-lg border border-line bg-panel-2 px-3 py-2 text-sm text-text outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-2 focus:ring-accent/20;
+  @apply w-full rounded-xl border border-line bg-panel-2 px-3.5 py-2.5 text-sm text-text outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/15;
 }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 active:translate-y-px;
 }
-@utility btn-primary { @apply btn bg-accent text-accent-ink hover:brightness-110; }
-@utility btn-ghost { @apply btn border border-line text-text hover:bg-panel-2; }
+@utility btn-primary {
+  @apply btn text-white;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent-deep) 70%, white), var(--accent-deep));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 10px 24px -10px color-mix(in oklab, var(--accent-deep) 80%, transparent);
+  &:hover { filter: brightness(1.06); transform: translateY(-1px); }
+}
+@utility btn-ghost { @apply btn border border-line-2 bg-panel text-text hover:bg-panel-2; box-shadow: var(--shadow-card); }
 @utility btn-danger { @apply btn border border-danger/40 text-danger hover:bg-danger/10; }
-@utility card { @apply rounded-2xl border border-line bg-panel; }
+@utility card { @apply rounded-[20px] border border-line bg-panel; box-shadow: var(--shadow-card); }
+/* The product badge: an App-blue tile, the same family look as the axxes.app icons. */
+@utility app-tile {
+  @apply text-white;
+  background: linear-gradient(155deg, #7aa0ff 0%, #3b6ff0 45%, #1d47b8 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 -2px 6px rgb(0 0 0 / 0.18), 0 8px 18px -8px rgb(38 96 217 / 0.8);
+}
+/* Frosted surfaces for headers, popovers and dialogs. */
+@utility glass {
+  background: rgb(22 22 30 / 0.72);
+  backdrop-filter: saturate(1.6) blur(18px);
+  -webkit-backdrop-filter: saturate(1.6) blur(18px);
+}
 
 /* Rendered page content */
 .nexus-prose { line-height: 1.7; font-size: 15px; }
