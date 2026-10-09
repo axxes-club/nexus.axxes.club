@@ -17,7 +17,7 @@ export function useBrand() {
  */
 export function BrandScope({ brand, children }: { brand: CustomerBrand | null; children: React.ReactNode }) {
   const style = brand?.accent
-    ? ({ display: "contents", "--accent": brand.accent, "--product-accent": brand.accent, "--accent-fg": "#ffffff", "--accent-ink": "#ffffff" } as React.CSSProperties)
+    ? ({ display: "contents", "--accent": brand.accent, "--accent-deep": brand.accent, "--product-accent": brand.accent, "--accent-fg": "#ffffff", "--accent-ink": "#ffffff" } as React.CSSProperties)
     : ({ display: "contents" } as React.CSSProperties)
   return (
     <BrandContext.Provider value={brand}>

@@ -6,7 +6,7 @@ import { product } from "@/product.config"
 /** Just the badge, for the collapsed rail where the wordmark has no room. */
 function AxxesLogoMark() {
   return (
-    <span className="mx-auto grid size-7 place-items-center rounded-lg bg-accent font-mono text-sm font-bold text-accent-ink">
+    <span className="mx-auto grid size-7 place-items-center rounded-[9px] app-tile text-sm font-bold">
       {product.name[0]}
     </span>
   )
@@ -16,7 +16,7 @@ function AxxesLogo({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <div className="flex items-center gap-2.5">
       <span
-        className={`grid place-items-center rounded-lg bg-accent font-mono font-bold text-accent-ink ${size === "lg" ? "size-10 text-lg" : "size-7 text-sm"}`}
+        className={`grid place-items-center rounded-[9px] app-tile font-bold ${size === "lg" ? "size-10 text-lg" : "size-7 text-sm"}`}
       >
         {product.name[0]}
       </span>
