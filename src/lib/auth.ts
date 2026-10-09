@@ -1,3 +1,5 @@
+import {APIError} from 'better-auth/api';
+import {guardAccountAuth,assertActiveAccount} from '@/lib/security/admission-server';
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db, schema } from "@/lib/db"
@@ -15,7 +17,7 @@ const parentDomain = (cookieDomain || "axxes.club").replace(/^\./, "")
 // Central AXXES sign-in; when unset the app uses its own sign-in page
 export const HANDSHAKE_URL = process.env.HANDSHAKE_URL?.replace(/\/$/, "") || null
 
-export const auth = betterAuth({
+const baseAuth = betterAuth({
   baseURL,
   secret: process.env.BETTER_AUTH_SECRET,
   trustedOrigins: [
@@ -26,5 +28,10 @@ export const auth = betterAuth({
   ],
   advanced: cookieDomain ? { crossSubDomainCookies: { enabled: true, domain: cookieDomain } } : undefined,
   database: drizzleAdapter(db, { provider: "pg", schema }),
+  // Shared identity enrollment is controlled by Handshake invite creation.
+  databaseHooks:{session:{create:{before:async(session)=>{try{await assertActiveAccount(session.userId);}catch{throw new APIError('FORBIDDEN',{message:'Account access is unavailable.'});}return {data:session};}}}},
+  disabledPaths: ["/sign-up/email"],
   emailAndPassword: { enabled: true },
 })
+
+export const auth=guardAccountAuth(baseAuth);

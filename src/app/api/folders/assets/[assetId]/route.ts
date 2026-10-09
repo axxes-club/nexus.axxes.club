@@ -1,7 +1,8 @@
+import {wrapAdmission} from '@/lib/security/admission-server';
 import { NextRequest } from "next/server"
 import { foldersRequest, pageContext } from "@/lib/folders/server"
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ assetId: string }> }) {
+async function GETHandler(req: NextRequest, { params }: { params: Promise<{ assetId: string }> }) {
   try {
     const { assetId } = await params
     const pageId = req.nextUrl.searchParams.get("pageId")
@@ -23,3 +24,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ asse
     return new Response("This attachment is unavailable. Its owner may have moved it to Trash or its expiration date has passed.", { status: 404, headers: { "Cache-Control": "private, no-store" } })
   }
 }
+
+export const GET=wrapAdmission(GETHandler,'src/app/api/folders/assets/[assetId]/route.ts'+':GET',12000);
